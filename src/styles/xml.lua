@@ -15,6 +15,14 @@ function xmlutils.parse(buffer)
 
   local parsePoint = tagStack
 
+  local next = buffer:find("%<%!%-%-")
+  while next do
+    local endComment = buffer:find("%-%-%>", next + 4)
+    buffer = buffer:sub(1, next - 1) .. buffer:sub(endComment + 3)
+
+    next = buffer:find("%<%!%-%-")
+  end
+
   local ntWhite = buffer:find("%S")
 
   while ntWhite do

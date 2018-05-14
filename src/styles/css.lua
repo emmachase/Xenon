@@ -6,6 +6,7 @@ end
 
 return function(toParse)
   local ruleset = {}
+  local order = {}
 
   local next = toParse:find("%/%*")
   while next do
@@ -21,6 +22,7 @@ return function(toParse)
     for applicator in applicatorStr:gmatch("[^,]+") do
       applicators[#applicators + 1] = trim(applicator)
       ruleset[trim(applicator)] = {}
+      order[#order + 1] = trim(applicator)
     end
 
     local contents = IRules:match("%b{}"):sub(2, -2)
@@ -38,5 +40,5 @@ return function(toParse)
     end
   end
 
-  return ruleset
+  return ruleset, order
 end

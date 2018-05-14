@@ -41,9 +41,14 @@ local defaultLayout =
 [[]]
 --#includeFile "src/styles/default.html"
 
+local defaultStyles =
+--#ignore
+[[]]
+--#includeFile "src/styles/default.css"
+
 --#require "src/styles/renderer.lua" as renderer
 renderer.inflateXML(defaultLayout)
-
+renderer.processStyles(defaultStyles)
 
 
 
