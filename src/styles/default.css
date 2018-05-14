@@ -1,0 +1,121 @@
+/* Think of this file as your reference:
+    Everything that can be customized is in here
+    And everything that is not in here, cannot be customized */
+
+colors {
+    --white:     #F0F0F0;
+    --orange:    #F2B233;
+    --magenta:   #E57FD8;
+    --lightBlue: #99B2F2;
+    --yellow:    #DEDE6C;
+    --lime:      #7FCC19;
+    --pink:      #F2B2CC;
+    --gray:      #4C4C4C;
+    --lightGray: #999999;
+    --cyan:      #4C99B2;
+    --purple:    #B266E5;
+    --blue:      #3366CC;
+    --brown:     #7F664C;
+    --green:     #57A64E;
+    --red:       #CC4C4C;
+    --black:     #191919;
+}
+
+* {
+    display: block;
+}
+
+header {
+    position: relative;
+
+    content: "My Shop";
+    /* background: url(myLogo.nfp) */
+    /* background-position: center; */
+    /* Content and Background (Images) are mutually exclusive, with content taking precedence if both are present */
+
+    background-color: blue;
+
+    width: 100%;
+    padding: 2px;
+
+    color: white;
+    text-align: left;
+}
+
+aside {
+    position: absolute;
+    right: 10px;
+
+    /* Since `top` (and bottom) are omitted here, it will be positioned relative to the last positioned element,
+        which is exactly where we want it to be.. */
+
+    height: 100rem; /* In Xenon CSS, rem doesn't stand for Root Em, it stands for Remaining space, so this is 100% of the remaining space */
+
+    text-align: left;
+    
+    background-color: purple;
+    color: white;
+}
+
+table {
+    position: relative;
+
+    background-color: lightBlue;
+
+    width: calc(100% - 10px);
+    height: calc(100rem - 2px); /* See note under aside height */
+}
+
+thead tr {
+    line-height: 3px;
+}
+
+tbody tr {
+    line-height: 1px;
+}
+
+th {
+    color: white;
+}
+
+td {
+    color: white;
+}
+
+td:nth-child(1) {
+    color: gray;
+
+    text-align: right;
+    width: 6px;
+}
+
+td:nth-child(2) {
+    flex: 1; /* tr elements implicitly have flex-box like behavior, it is the only element that (currently) supports this feature */
+}
+
+td:nth-child(3) {
+    text-align: right;
+    width: 10px;
+}
+
+td:nth-child(4) {
+    color: gray;
+}
+
+/* This is a pretty unreliable rule, just saves a few chars */
+/* If you plan on changing the structure, you will most likely need to change this */
+th:nth-child(2n + 1) {
+    text-align: right;
+}
+
+details {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+
+    background-color: transparent;
+    color: white;
+
+    width: 100%;
+    height: 1px;
+}
