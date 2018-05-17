@@ -17,13 +17,14 @@ local fontData = require("font.lua")
 
 local font = surface.loadFont(surface.load(fontData, true))
 
---#ignore 6
+--#ignore 7
 local wapi = require("../vendor/w.lua")
 local rapi = require("../vendor/r.lua")
 local kapi = require("../vendor/k.lua")
 local jua  = require("../vendor/jua.lua")
 
 local logger = require("logger.lua")
+local util = require("util.lua")
 
 --#require "vendor/w.lua" as wapi
 --#require "vendor/r.lua" as rapi
@@ -32,6 +33,8 @@ local logger = require("logger.lua")
 
 --#require "src/logger.lua" as logger
 logger.init(true)
+
+--#require "src/util.lua" as util
 
 --#require "vendor/json.lua" as json
 
@@ -232,23 +235,6 @@ local function processPayment(tx, meta)
   end
 end
 
-local function wrappedWrite(surf, text, x, y, width)
-  local stX = x
-  for word in text:gmatch("%S+") do
-    if x + #word > stX + width then
-      x = stX
-      y = y + 1
-    end
-
-    local col = colors.white
-    if word:upper() == word then
-      col = colors.red
-    end
-    surf:drawString(word, x, y, nil, col)
-    x = x + #word + 1
-  end
-end
-
 
 local monW, monH = monPeriph.getSize()
 local altW, altH
@@ -282,7 +268,7 @@ local function drawDisclaimer()
   if altMonPeriph then
     disclaimer:clear()
 
-    wrappedWrite(disclaimer, "If the lamp below is NOT flashing, then the shop is not open. DO NOT buy unless it is flashing!",
+    util.wrappedWrite(disclaimer, "If the lamp below is NOT flashing, then the shop is not open. DO NOT buy unless it is flashing!",
       1, 1, altW - 2)
 
     altMonPeriph.clear()
@@ -341,7 +327,7 @@ function drawStock(warn)
   end
 
   displaySurf:fillRect(monW - 30, 4, 30, monH - 4, colors.blue)
-  wrappedWrite(displaySurf, "Welcome! To make a purchase, use /pay to send the exact amount of kst to the respective address. Excess krist will be refunded.",
+  util.wrappedWrite(displaySurf, "Welcome! To make a purchase, use /pay to send the exact amount of kst to the respective address. Excess krist will be refunded.",
     monW - 29, 5, 29)
 
   displaySurf:drawString("By @Incin", 0, monH - 1, nil, colors.gray)

@@ -53,10 +53,11 @@ aside {
     /* Since `top` (and bottom) are omitted here, it will be positioned relative to the last positioned element,
         which is exactly where we want it to be.. */
 
-    width: 10px;
+    width: 16px;
     height: 100rem; /* In Xenon CSS, rem doesn't stand for Root Em, it stands for Remaining space, so this is 100% of the remaining space */
 
     text-align: left;
+    padding: 1px;
     
     background-color: purple;
     color: white;
@@ -67,7 +68,7 @@ table {
 
     background-color: lightBlue;
 
-    width: calc(100% - 10px);
+    width: calc(100% - 16px);
     height: calc(100rem - 2px); /* See note under aside height */
 }
 
@@ -121,6 +122,6 @@ details {
     background-color: transparent;
     color: white;
 
-    width: calc(100% - 10px);
+    width: calc(100% - 16px);
     height: 1px;
 }

@@ -139,6 +139,16 @@ local function resolveVal(context, extra, valStr)
 
   local type = type(extra) == "table" and extra.type or extra
 
+  if type == "string" then
+    local dq = valStr:match("\"([^\"]+)\"")
+    if dq then return dq end
+
+    local sq = valStr:match("'([^']+)'")
+    if sq then return sq end
+
+    return valStr
+  end
+
   if type == "number" then
     local val = parseOffset(valStr)
     if val[1] == "pixel" then
@@ -269,6 +279,8 @@ local function resolveVal(context, extra, valStr)
       return -1
     elseif renderer.colorReference[valStr] then
       return 2^renderer.colorReference[valStr][1]
+    elseif not valStr then
+      return 0
     else
       return error("Color '" .. valStr .. "' was never defined")
     end
@@ -398,7 +410,7 @@ function renderer.renderToSurface(surf, node, context)
       width = resolveVal(context, "width", s.width or "100rem")
 
       if not s.height and el.adapter and el.adapter.resolveHeight then
-        s.height = el.adapter:resolveHeight(s, context, resolveVal)
+        s.height = el.adapter:resolveHeight(s, {flow = context, width = width}, resolveVal)
       end
       height = resolveVal(context, "height", s.height or "100rem")
 
