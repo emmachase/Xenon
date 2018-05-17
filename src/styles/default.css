@@ -25,6 +25,10 @@ colors {
     display: block;
 }
 
+body {
+    background-color: lightBlue;
+}
+
 header {
     position: relative;
 
@@ -36,7 +40,7 @@ header {
     background-color: blue;
 
     width: 100%;
-    padding: 2px;
+    padding: 1px;
 
     color: white;
     text-align: left;
@@ -44,11 +48,12 @@ header {
 
 aside {
     position: absolute;
-    right: 10px;
+    right: 0;
 
     /* Since `top` (and bottom) are omitted here, it will be positioned relative to the last positioned element,
         which is exactly where we want it to be.. */
 
+    width: 10px;
     height: 100rem; /* In Xenon CSS, rem doesn't stand for Root Em, it stands for Remaining space, so this is 100% of the remaining space */
 
     text-align: left;
@@ -116,6 +121,6 @@ details {
     background-color: transparent;
     color: white;
 
-    width: 100%;
+    width: calc(100% - 10px);
     height: 1px;
 }

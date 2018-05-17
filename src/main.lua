@@ -50,7 +50,14 @@ local defaultStyles =
 renderer.inflateXML(defaultLayout)
 renderer.processStyles(defaultStyles)
 
+for k, v in pairs(renderer.colorReference) do
+  term.setPaletteColor(2^v[1], tonumber(v[2], 16))
+end
 
+local testSurf = surface.create(term.getSize())
+renderer.renderToSurface(testSurf)
+testSurf:output()
+os.pullEvent("mouse_click")
 
 
 if config.chest then
