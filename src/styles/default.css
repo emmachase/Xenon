@@ -84,22 +84,31 @@ td {
 
 td:nth-child(1) {
     color: red;
-
-    text-align: right;
-    width: 6px;
 }
 
-td:nth-child(2) {
+th:nth-child(1), td:nth-child(1) {
+    text-align: right;
+    width: 7px;
+}
+
+th:nth-child(2), td:nth-child(2) {
     flex: 1; /* tr elements implicitly have flex-box like behavior, it is the only element that (currently) supports this feature */
 }
 
 td:nth-child(3) {
     text-align: right;
+}
+
+th:nth-child(3), td:nth-child(3) {
     width: 10px;
 }
 
 td:nth-child(4) {
     color: brown;
+}
+
+th:nth-child(4), td:nth-child(4) {
+    width: 12px;
 }
 
 /* This is a pretty unreliable rule, just saves a few chars */

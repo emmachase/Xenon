@@ -17,7 +17,7 @@ local function makeTextEl(content, parent)
 end
 
 function tableComponent.new(node, renderer)
-  local t = {node = node, renderer = renderer}
+  local t = { node = node, renderer = renderer }
 
   local rtemp = renderer.querySelector("#row-template")
   if #rtemp > 0 then
@@ -58,33 +58,47 @@ function tableComponent:render(surf, position, styles, resolver)
     local flowX = position.left
     local maxH = 0
 
+    local flexTot = 0
+    local remWidth = position.width
+    local widths = {}
+
     for j = 1, #row.children do
       local td = row.children[j]
 
-      local height = tonumber(td.adapter:resolveHeight(td.styles, {width = 10}, resolver):sub(1, -3))
+      if td.styles.width then
+        local w = resolver({width = position.width, flowW = remWidth}, "width", td.styles.width)
+        remWidth = remWidth - w
+        widths[j] = w
+      else
+        flexTot = flexTot + (tonumber(td.styles.flex) or 1)
+      end
+    end
+
+    for j = 1, #row.children do
+      local td = row.children[j]
+
+      local height = tonumber(td.adapter:resolveHeight(td.styles, { width = 10 }, resolver):sub(1, -3))
+
+      local width
+      if widths[j] then
+        width = math.floor(widths[j])
+      else
+        width = math.floor(remWidth * ((tonumber(td.styles.flex) or 1) / flexTot))
+      end
 
       td.adapter:render(surf, {
         left = flowX,
         top = flowY,
---        width: resolver({
---          flowX = 0,
---          flowY = 0,
---          flowW = surf.width,
---          flowH = surf.height,
---          width = surf.width,
---          height = surf.height
---        }, "width", styles.)
-        width = 12,
+        width = width,
         height = height
       }, td.styles, resolver)
 
       maxH = height
 
-      flowX = flowX + 12
+      flowX = flowX + width
     end
 
     flowY = flowY + maxH
-    --surf:drawString("Row #" .. i, 2, i + 10)
   end
 end
 
@@ -135,23 +149,23 @@ function tableComponent:updateData(data)
 
       if stock then
         print("made stock babies")
-        stock.children = {makeTextEl(v, stock)}
+        stock.children = { makeTextEl(v, stock) }
       end
 
       if name then
-        name.children = {makeTextEl(config.items[k].disp or k, name)}
+        name.children = { makeTextEl(config.items[k].disp or k, name) }
       end
 
       if price then
-        price.children = {makeTextEl(config.items[k].price, price)}
+        price.children = { makeTextEl(config.items[k].price, price) }
       end
 
       if pricePerStack then
-        pricePerStack.children = {makeTextEl(util.round(60 / config.items[k].price, 2), pricePerStack)}
+        pricePerStack.children = { makeTextEl(util.round(60 / config.items[k].price, 2), pricePerStack) }
       end
 
       if addy then
-        addy.children = {makeTextEl(config.items[k].addy, addy)}
+        addy.children = { makeTextEl(config.items[k].addy, addy) }
       end
 
       newChildren[#newChildren + 1] = skeleton

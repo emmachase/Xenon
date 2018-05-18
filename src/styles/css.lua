@@ -22,7 +22,7 @@ return function(toParse)
     local orderIS = {}
     for applicator in applicatorStr:gmatch("[^,]+") do
       applicators[#applicators + 1] = trim(applicator)
-      ruleset[trim(applicator)] = {}
+      ruleset[trim(applicator)] = ruleset[trim(applicator)] or {}
       order[#order + 1] = {trim(applicator), {}}
       orderIS[#orderIS + 1] = #order
     end
