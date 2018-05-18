@@ -136,7 +136,6 @@ function tableComponent:updateData(data)
 
       local skeleton = util.deepClone(self.rowTemplate)
       local tel = self.renderer.querySelector("td", skeleton)
-      print("tel: " .. #tel)
       for i = 1, #tel do
         tel[i].adapter = self.renderer.components.text.new(tel[i])
       end
@@ -148,7 +147,6 @@ function tableComponent:updateData(data)
       local addy = self.renderer.querySelector("#addy", skeleton)[1]
 
       if stock then
-        print("made stock babies")
         stock.children = { makeTextEl(v, stock) }
       end
 

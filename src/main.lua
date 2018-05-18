@@ -64,8 +64,6 @@ local exampleData = {
 
 local els = renderer.querySelector("table")
 els[1].adapter:updateData(exampleData)
-print("done")
-read()
 
 local testSurf = surface.create(term.getSize())
 renderer.renderToSurface(testSurf)
