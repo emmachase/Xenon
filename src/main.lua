@@ -57,6 +57,16 @@ for k, v in pairs(renderer.colorReference) do
   term.setPaletteColor(2^v[1], tonumber(v[2], 16))
 end
 
+local exampleData = {
+  ["minecraft:iron_ingot::0"] = 14,
+  ["minecraft:diamond::0"] = 27
+}
+
+local els = renderer.querySelector("table")
+els[1].adapter:updateData(exampleData)
+print("done")
+read()
+
 local testSurf = surface.create(term.getSize())
 renderer.renderToSurface(testSurf)
 testSurf:output()

@@ -9,5 +9,6 @@ return {
   table = tableComponent,
   header = basicComponent,
   aside = basicComponent,
-  details = basicComponent
+  details = basicComponent,
+  text = basicComponent
 }

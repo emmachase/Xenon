@@ -1,5 +1,6 @@
 local renderer = {}
 renderer.model = {}
+renderer.styles = {{}, {}}
 
 --#ignore 2
 local xmlutils = require("xml")
@@ -12,6 +13,8 @@ local css = require("css")
 --#ignore
 local components = require("components/index")
 --#require "src/styles/components/index.lua" as components
+
+renderer.components = components
 
 local function deepMap(set, func, level)
   level = level or 1
@@ -29,24 +32,87 @@ local function queryMatch(el, selector)
 
   if selector == "*" then
     return true
-  elseif selector:match("^%.") then
-    -- Matching a class
-    -- TODO
   else
-    -- Matching element
-    local nameToMatch = selector:match("^([^:]+):?")
+    local namesToMatch = selector:match("^([^:]+):?")
     local psuedoSelector = selector:match(":(.+)")
 
-    if el.name == nameToMatch then
-      -- TODO psuedoSelectors
-      return true
-    else
-      return false
+    for nameToMatch in namesToMatch:gmatch("[%.%#]?[^%.%#]+") do
+      if nameToMatch:match("^%#") then -- Matching an id
+        if el.properties.id ~= nameToMatch:match("^%#(.+)") then
+          return false
+        end
+      elseif nameToMatch:match("^%.") then -- Matching a class
+        if el.properties.class then
+          local good = false
+          for class in el.properties.class:match("%S+") do
+            if class == nameToMatch:match("^%.(.+)") then
+              good = true
+              break
+            end
+          end
+
+          if not good then
+            return false
+          end
+        else
+          return false
+        end
+      elseif el.name ~= nameToMatch then -- Matching an element
+        return false
+      end
     end
+
+    if psuedoSelector then
+      local pfunc = psuedoSelector:match("[^%(%)]+")
+      local args = psuedoSelector:match("%b()"):sub(2, -2)
+
+      if pfunc == "nth-child" then
+        local nf = -1
+        local op = "+"
+        local ofs = 0
+        for actor in args:gmatch("%S+") do
+          local nn = actor:match("(%d+)n")
+          if nn then nf = tonumber(nn) else
+            local nop = actor:match("[%+%-]")
+            if nop then op = nop else
+              ofs = tonumber(actor)
+            end
+          end
+        end
+
+        local acn = 0
+        for i = 1, #el.parent.children do
+          if el.parent.children[i] == el then
+            acn = i
+            break
+          end
+        end
+
+        local acndebug = acn -- TODO REMOVE ME
+
+        if op == "+" then
+          acn = acn - ofs
+        else
+          acn = acn + ofs
+        end
+
+        if nf ~= -1 then
+          if acn / nf % 1 ~= 0 then
+            return false
+          end
+        else
+          if acn ~= 0 then
+            return false
+          end
+        end
+      end
+    end
+
+    return true
   end
 end
 
-local function querySelector(selector)
+local function querySelector(selector, startingNode)
   local steps = {}
   local step = ""
   local brace = 0
@@ -66,7 +132,7 @@ local function querySelector(selector)
   steps[#steps + 1] = step
 
   local matches = {}
-  deepMap(renderer.model, function(el, level)
+  deepMap(startingNode or renderer.model, function(el, level)
     if #steps > level then return end -- Cannot possibly match the selector so optimize a bit
 
     local stillMatches = true
@@ -288,52 +354,69 @@ local function resolveVal(context, extra, valStr)
 end
 
 function renderer.processStyles(styles)
-  local rulesets, order = css(styles)
+  local rulesets, order
 
-  local colorSet
-  if rulesets.colors then
-    colorSet = rulesets.colors
-  else
-    -- ComputerCraft Default Palette
-    colorSet = {
-      white =      "#F0F0F0",
-      orange =     "#F2B233",
-      magenta =    "#E57FD8",
-      lightBlue =  "#99B2F2",
-      yellow =     "#DEDE6C",
-      lime =       "#7FCC19",
-      pink =       "#F2B2CC",
-      gray =       "#4C4C4C",
-      lightGray =  "#999999",
-      cyan =       "#4C99B2",
-      purple =     "#B266E5",
-      blue =       "#3366CC",
-      brown =      "#7F664C",
-      green =      "#57A64E",
-      red =        "#CC4C4C",
-      black =      "#191919"
-    }
-  end
+  if styles then
+    rulesets, order = css(styles)
+    renderer.styles = {rulesets, order}
 
-  local toTab = {}
+    local colorSet, colorOrder
+    if rulesets.colors then
+      colorSet = rulesets.colors
+      for i = 1, #order do
+        if order[i][1] == "colors" then
+          colorOrder = order[i][2]
+        end
+      end
+    else
+      -- ComputerCraft Default Palette
+      colorSet = {
+        white =      "#F0F0F0",
+        orange =     "#F2B233",
+        magenta =    "#E57FD8",
+        lightBlue =  "#99B2F2",
+        yellow =     "#DEDE6C",
+        lime =       "#7FCC19",
+        pink =       "#F2B2CC",
+        gray =       "#4C4C4C",
+        lightGray =  "#999999",
+        cyan =       "#4C99B2",
+        purple =     "#B266E5",
+        blue =       "#3366CC",
+        brown =      "#7F664C",
+        green =      "#57A64E",
+        red =        "#CC4C4C",
+        black =      "#191919"
+      }
 
-  local ci = 0
-  for color, hex in pairs(colorSet) do
-    if ci == 16 then
-      return error("Too many colors")
+      colorOrder = {"white", "orange", "magenta", "lightBlue", "yellow", "lime", "pink", "gray",
+                    "lightGray", "cyan", "purple", "blue", "brown", "green", "red", "black"}
     end
 
-    toTab[color:match("^%-?%-?([^%-]+)$")] = {ci, hex:match("#(.+)")}
-    ci = ci + 1
+    local toTab = {}
+
+    local ci = 0
+    for i = 1, #colorOrder do
+      if ci == 16 then
+        return error("Too many colors")
+      end
+
+      local color, hex = colorOrder[i], colorSet[colorOrder[i]]
+
+      toTab[color:match("^%-?%-?([^%-]+)$")] = {ci, hex:match("#(.+)")}
+      ci = ci + 1
+    end
+
+    colorSet = toTab
+
+    renderer.colorReference = colorSet
+  else
+    rulesets, order = renderer.styles[1], renderer.styles[2]
   end
 
-  colorSet = toTab
-
-  renderer.colorReference = colorSet
-
   for rulesetI = 1, #order do
-    local k = order[rulesetI]
-    local v = rulesets[order[rulesetI]]
+    local k = order[rulesetI][1]
+    local v = rulesets[order[rulesetI][1]]
     local matches = querySelector(k)
 
     for i = 1, #matches do
@@ -360,7 +443,7 @@ function renderer.inflateXML(xml)
     local el = body.children[i]
 
     if components[el.name] then
-      el.adapter = components[el.name].new(el)
+      el.adapter = components[el.name].new(el, renderer, resolveVal)
     else
       error("Unknown element " .. el.name)
     end
@@ -453,5 +536,7 @@ function renderer.renderToSurface(surf, node, context)
     end
   end
 end
+
+renderer.querySelector = querySelector
 
 return renderer

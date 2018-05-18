@@ -27,17 +27,30 @@ function basicTextComponent:render(surf, position, styles, resolver)
   if styles.content then
     util.wrappedWrite(surf, resolver({}, "string", styles.content),
       position.left + leftPad, cY, position.width - leftPad - rightPad,
-      resolver({}, "color", styles.color))
+      resolver({}, "color", styles.color), styles["text-align"] or "left")
   else
     local children = self.node.children
+    local acc = ""
     for i = 1, #children do
       if children[i].type == "text" then
-        cY = util.wrappedWrite(surf, children[i].content or "",
-          position.left + leftPad, cY, position.width - leftPad - rightPad,
-          resolver({}, "color", styles.color))
+        acc = acc .. children[i].content
       elseif children[i].name == "br" then
+        cY = util.wrappedWrite(surf, acc,
+          position.left + leftPad, cY, position.width - leftPad - rightPad,
+          resolver({}, "color", styles.color), styles["text-align"] or "left")
+        acc = ""
         cY = cY + 1
+      elseif children[i].name == "span" then
+--        cY = util.wrappedWrite(surf, children[i].children[1].content or "",
+--          position.left + leftPad, cY, position.width - leftPad - rightPad,
+--          resolver({}, "color", styles.color), styles["text-align"] or "left")
+        acc = acc .. children[i].children[1].content
       end
+    end
+    if #acc > 0 then
+      util.wrappedWrite(surf, acc,
+        position.left + leftPad, cY, position.width - leftPad - rightPad,
+        resolver({}, "color", styles.color), styles["text-align"] or "left")
     end
   end
 end
@@ -59,13 +72,13 @@ function basicTextComponent:resolveHeight(styles, context, resolver)
 
   if styles.content then
     cY = util.wrappedWrite(nil, resolver({}, "string", styles.content),
-      0, cY, context.width - leftPad - rightPad)
+      0, cY, context.width - leftPad - rightPad, nil, styles["text-align"] or "left")
   else
     local children = self.node.children
     for i = 1, #children do
       if children[i].type == "text" then
         cY = util.wrappedWrite(nil, children[i].content or "",
-          0, cY, context.width - leftPad - rightPad)
+          0, cY, context.width - leftPad - rightPad, nil, styles["text-align"] or "left")
       elseif children[i].name == "br" then
         cY = cY + 1
       end

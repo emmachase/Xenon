@@ -19,10 +19,12 @@ return function(toParse)
   for IRules in toParse:gmatch("%s*([^{}]+%s-%b{})") do
     local applicatorStr = IRules:match("^[^{}]+")
     local applicators = {}
+    local orderIS = {}
     for applicator in applicatorStr:gmatch("[^,]+") do
       applicators[#applicators + 1] = trim(applicator)
       ruleset[trim(applicator)] = {}
-      order[#order + 1] = trim(applicator)
+      order[#order + 1] = {trim(applicator), {}}
+      orderIS[#orderIS + 1] = #order
     end
 
     local contents = IRules:match("%b{}"):sub(2, -2)
@@ -35,6 +37,11 @@ return function(toParse)
         for i = 1, #applicators do
           local applicator = applicators[i]
           ruleset[applicator][name] = rest
+        end
+
+        for i = 1, #orderIS do
+          local oT = order[orderIS[i]][2]
+          oT[#oT + 1] = name
         end
       end
     end
