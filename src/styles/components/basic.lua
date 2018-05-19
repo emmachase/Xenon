@@ -83,7 +83,7 @@ function basicTextComponent:render(surf, position, styles, resolver)
   elseif styles.content then
     if styles["font-size"] == "2em" then
       if bgc <= 0 then
-        return error("'font-size: 2em' requires 'background-color' to be present")
+        error("'font-size: 2em' requires 'background-color' to be present")
       end
 
       writeBig(surf, resolver({}, "string", styles.content),
@@ -98,7 +98,7 @@ function basicTextComponent:render(surf, position, styles, resolver)
   else
     if styles["font-size"] == "2em" then
       if bgc <= 0 then
-        return error("'font-size: 2em' requires 'background-color' to be present")
+        error("'font-size: 2em' requires 'background-color' to be present")
       end
 
       -- TODO Wrapping support?

@@ -102,11 +102,8 @@ td {
     width: 10px;
 }
 
-.addy-full {
-    color: black;
-}
-
 .addy-full, .addy {
+    color: white;
     width: 15px;
 }
 

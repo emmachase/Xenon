@@ -156,7 +156,7 @@ end
 
 local function parseHex(hexStr)
   if hexStr:sub(1, 1) ~= "#" then
-    return error("'" .. hexStr .. "' is not a hex string")
+    error("'" .. hexStr .. "' is not a hex string")
   end
   hexStr = hexStr:sub(2)
 
@@ -172,7 +172,7 @@ local function parseHex(hexStr)
       finalNums[#finalNums + 1] = tonumber(c, 16) / 255
     end
   else
-    return error("'#" .. hexStr .. "' is of invalid length")
+    error("'#" .. hexStr .. "' is of invalid length")
   end
 
   return finalNums
@@ -348,7 +348,7 @@ local function resolveVal(context, extra, valStr)
     elseif not valStr then
       return 0
     else
-      return error("Color '" .. valStr .. "' was never defined")
+      error("Color '" .. valStr .. "' was never defined")
     end
   end
 end
@@ -398,7 +398,7 @@ function renderer.processStyles(styles)
     local ci = 0
     for i = 1, #colorSet do
       if ci == 16 then
-        return error("Too many colors")
+        error("Too many colors")
       end
 
       local color, hex = colorSet[i][1], colorSet[i][2]

@@ -144,7 +144,7 @@ function tableComponent:updateData(data)
       local cOrder1 = config.items[fromListName(str1)].order
       local cOrder2 = config.items[fromListName(str2)].order
 
-      if cOrder1 or cOrder2 then
+      if (cOrder1 or cOrder2) and (cOrder1 ~= cOrder2) then
         return (cOrder1 or math.huge) < (cOrder2 or math.huge)
       end
 

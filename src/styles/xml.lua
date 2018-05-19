@@ -33,7 +33,7 @@ function xmlutils.parse(buffer)
       --Text node probably
       if nxtLoc ~= buffer:find("%<") then
         -- Syntax error
-        return error("Unexpected character")
+        error("Unexpected character")
       end
 
       parsePoint.children[#parsePoint.children + 1] = {type = "text", content = buffer:sub(1, nxtLoc - 1), parent = parsePoint}
@@ -48,14 +48,14 @@ function xmlutils.parse(buffer)
         local _, endTagPos = buffer:find("%s*>")
         if not endTagPos then
           -- Improperly terminated terminating tag... how?
-          return error("Improperly terminated terminating tag...")
+          error("Improperly terminated terminating tag...")
         end
 
         buffer = buffer:sub(endTagPos + 1)
       else
         -- BAD! Someone forgot to close their tag, gonna be strict and throw
         -- TODO?: Add stack unwind to attempt to still parse?
-        return error("Unterminated '" .. tostring(parsePoint.name) .. "' tag")
+        error("Unterminated '" .. tostring(parsePoint.name) .. "' tag")
       end
     else
       -- Proper node
@@ -66,7 +66,7 @@ function xmlutils.parse(buffer)
         local ctepos = buffer:find("%]%]%>")
         if not ctepos then
           -- Syntax error
-          return error("Unterminated CDATA")
+          error("Unterminated CDATA")
         end
 
         parsePoint.children[#parsePoint.children].content = buffer:sub(10, ctepos - 1)
@@ -90,7 +90,7 @@ function xmlutils.parse(buffer)
           if nChar == 1 then
             local nextNtWhite = buffer:find("%S", eChar + 1)
             if not nextNtWhite then
-              return error("Unexpected EOF")
+              error("Unexpected EOF")
             end
             buffer = buffer:sub(nextNtWhite)
 
@@ -98,7 +98,7 @@ function xmlutils.parse(buffer)
 
             local eqP = buffer:find("%=")
             if eqP ~= 1 then
-              return error("Expected '='")
+              error("Expected '='")
             end
 
             buffer = buffer:sub(eqP + 1)
@@ -112,7 +112,7 @@ function xmlutils.parse(buffer)
               if tonumber(wholeNum) then
                 parsePoint.properties[propName] = tonumber(wholeNum)
               else
-                return error("Unfinished number")
+                error("Unfinished number")
               end
 
               buffer = buffer:sub(endNP + 1)
@@ -136,13 +136,13 @@ function xmlutils.parse(buffer)
 
               buffer = buffer:sub(terminationPt + 1)
             else
-              return error("Unexpected property, expected number or string")
+              error("Unexpected property, expected number or string")
             end
           end
 
           sp, ep = buffer:find("%s*%/?>")
           if not sp then
-            return error("Unterminated tag")
+            error("Unterminated tag")
           end
         until sp == 1
 
