@@ -33,7 +33,7 @@ header {
     position: relative;
 
     /* content: "My Shop"; */
-    /* background: url(myLogo.nfp) */
+    /* background: url(myLogo.nfp); */
     /* background-position: center; */
     /* Content and Background (Images) are mutually exclusive, with content taking precedence if both are present */
 
@@ -103,7 +103,7 @@ td {
 }
 
 .addy-full {
-    color: brown;
+    color: black;
 }
 
 .addy-full, .addy {

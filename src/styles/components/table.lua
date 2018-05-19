@@ -91,6 +91,10 @@ function tableComponent:render(surf, position, styles, resolver)
     for j = 1, #row.children do
       local td = row.children[j]
 
+      if row.styles["line-height"] and not td.styles["line-height"] then
+        td.styles["line-height"] = row.styles["line-height"]
+      end
+
       local height = tonumber(td.adapter:resolveHeight(td.styles, { width = 10 }, resolver):sub(1, -3))
 
       local width
@@ -110,6 +114,13 @@ function tableComponent:render(surf, position, styles, resolver)
       maxH = math.max(maxH, height)
 
       flowX = flowX + width
+    end
+
+    if row.styles["background-color"] then
+      local c = resolver({}, "color", row.styles["background-color"])
+      if c > 0 then
+        surf:fillRect(position.left, flowY, position.width, maxH, c)
+      end
     end
 
     flowY = flowY + maxH
@@ -156,6 +167,8 @@ function tableComponent:updateData(data)
       local v = tostring(data[sortedList[sI]])
 
       local skeleton = util.deepClone(self.rowTemplate)
+      skeleton.parent = body
+
       local tel = self.renderer.querySelector("td", skeleton)
       for i = 1, #tel do
         tel[i].adapter = self.renderer.components.text.new(tel[i])
