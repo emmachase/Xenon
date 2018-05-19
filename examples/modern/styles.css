@@ -65,7 +65,7 @@ table {
     background-color: black;
 
     width: 100%;
-    height: calc(100rem - 5px); /* See note under aside height */
+    height: calc(100rem - 6px); /* See note under aside height */
 }
 
 td {
