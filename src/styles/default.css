@@ -32,7 +32,7 @@ body {
 header {
     position: relative;
 
-    content: "My Shop";
+    /* content: "My Shop"; */
     /* background: url(myLogo.nfp) */
     /* background-position: center; */
     /* Content and Background (Images) are mutually exclusive, with content taking precedence if both are present */
@@ -44,6 +44,8 @@ header {
 
     color: white;
     text-align: left;
+
+    font-size: 2em; /* Either 1em or 2em, no other sizes are currently supported */
 }
 
 aside {
@@ -59,7 +61,7 @@ aside {
     text-align: left;
     padding: 1px;
     
-    background-color: purple;
+    background-color: cyan;
     color: white;
 }
 
@@ -72,43 +74,45 @@ table {
     height: calc(100rem - 2px); /* See note under aside height */
 }
 
-th {
-    color: white;
-    padding: 1px 1px 1px 0;
-}
-
 td {
     color: white;
     padding: 0 1px 0 0;
 }
 
-td:nth-child(1) {
-    color: red;
-}
-
-th:nth-child(1), td:nth-child(1) {
+.stock {
+    color: white;
     text-align: right;
     width: 7px;
 }
 
-th:nth-child(2), td:nth-child(2) {
+.stock.low {
+    color: yellow;
+}
+
+.stock.critical {
+    color: red;
+}
+
+.name {
     flex: 1; /* tr elements implicitly have flex-box like behavior, it is the only element that (currently) supports this feature */
 }
 
-td:nth-child(3) {
+.price-container, .price {
     text-align: right;
-}
-
-th:nth-child(3), td:nth-child(3) {
     width: 10px;
 }
 
-td:nth-child(4) {
+.addy-full {
     color: brown;
 }
 
-th:nth-child(4), td:nth-child(4) {
-    width: 12px;
+.addy-full, .addy {
+    width: 15px;
+}
+
+th {
+    color: blue;
+    padding: 1px 1px 1px 0;
 }
 
 /* This is a pretty unreliable rule, just saves a few chars */

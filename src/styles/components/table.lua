@@ -16,6 +16,20 @@ local function makeTextEl(content, parent)
   }
 end
 
+local function addClass(node, class)
+  local prop = node.properties
+  local cc = prop.class or ""
+
+  if #cc > 0 then
+    local stM, enM = cc:find(class)
+    if (not stM) or cc:sub(stM - 1, enM + 1):match("%S+") ~= class then
+      prop.class = cc .. " " .. class
+    end
+  else
+    prop.class = class
+  end
+end
+
 function tableComponent.new(node, renderer)
   local t = { node = node, renderer = renderer }
 
@@ -93,7 +107,7 @@ function tableComponent:render(surf, position, styles, resolver)
         height = height
       }, td.styles, resolver)
 
-      maxH = height
+      maxH = math.max(maxH, height)
 
       flowX = flowX + width
     end
@@ -116,6 +130,13 @@ function tableComponent:updateData(data)
     end
 
     table.sort(sortedList, function(str1, str2)
+      local cOrder1 = config.items[fromListName(str1)].order
+      local cOrder2 = config.items[fromListName(str2)].order
+
+      if cOrder1 or cOrder2 then
+        return (cOrder1 or math.huge) < (cOrder2 or math.huge)
+      end
+
       str1 = config.items[fromListName(str1)].disp
       str2 = config.items[fromListName(str2)].disp
 
@@ -145,25 +166,43 @@ function tableComponent:updateData(data)
       local price = self.renderer.querySelector("#price", skeleton)[1]
       local pricePerStack = self.renderer.querySelector("#price-per-stack", skeleton)[1]
       local addy = self.renderer.querySelector("#addy", skeleton)[1]
+      local addyFull = self.renderer.querySelector("#addy-full", skeleton)[1]
 
       if stock then
         stock.children = { makeTextEl(v, stock) }
+        addClass(stock, "stock")
+
+        v = tonumber(v)
+        if v < (config.items[k].critical or config.criticalStock or 10) then
+          addClass(stock, "critical")
+        elseif v < (config.items[k].low or config.lowStock or 50) then
+          addClass(stock, "low")
+        end
       end
 
       if name then
         name.children = { makeTextEl(config.items[k].disp or k, name) }
+        addClass(stock, "name")
       end
 
       if price then
         price.children = { makeTextEl(config.items[k].price, price) }
+        addClass(price, "price")
       end
 
       if pricePerStack then
         pricePerStack.children = { makeTextEl(util.round(60 / config.items[k].price, 2), pricePerStack) }
+        addClass(pricePerStack, "price-per-stack")
       end
 
       if addy then
         addy.children = { makeTextEl(config.items[k].addy, addy) }
+        addClass(addy, "addy")
+      end
+
+      if addyFull then
+        addyFull.children = { makeTextEl(config.items[k].addy .. "@" .. config.name .. ".kst", addyFull) }
+        addClass(addyFull, "addy-full")
       end
 
       newChildren[#newChildren + 1] = skeleton

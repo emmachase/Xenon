@@ -7,17 +7,13 @@ function util.wrappedWrite(surf, text, x, y, width, color, align)
 
   local stX, stY = x, y
   for word in text:gmatch("%S+") do
-    if x + #word > stX + width then
+    if x + #word > stX + width and x ~= stX then
       x = stX
       y = y + 1
       lines[#lines] = lines[#lines]:sub(1, -2)
       lines[#lines + 1] = ""
     end
 
---    local col = colors.white
---    if word:upper() == word then
---      col = colors.red
---    end
     lines[#lines] = lines[#lines] .. word .. " "
     x = x + #word + 1
   end

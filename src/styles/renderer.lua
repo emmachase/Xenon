@@ -1,6 +1,6 @@
 local renderer = {}
 renderer.model = {}
-renderer.styles = {{}, {}}
+renderer.styles = { {}, {} }
 
 --#ignore 2
 local xmlutils = require("xml")
@@ -44,7 +44,7 @@ local function queryMatch(el, selector)
       elseif nameToMatch:match("^%.") then -- Matching a class
         if el.properties.class then
           local good = false
-          for class in el.properties.class:match("%S+") do
+          for class in el.properties.class:gmatch("%S+") do
             if class == nameToMatch:match("^%.(.+)") then
               good = true
               break
@@ -180,13 +180,13 @@ end
 
 local function parseOffset(numStr)
   if numStr == "0" then
-    return {"pixel", 0}
+    return { "pixel", 0 }
   elseif numStr:match("%d+px") then
-    return {"pixel", tonumber(numStr:match("%d+"))}
+    return { "pixel", tonumber(numStr:match("%d+")) }
   elseif numStr:match("%d+rem") then
-    return {"remain", tonumber(numStr:match("%d+"))}
+    return { "remain", tonumber(numStr:match("%d+")) }
   elseif numStr:match("%d+%%") then
-    return {"percent", tonumber(numStr:match("%d+"))}
+    return { "percent", tonumber(numStr:match("%d+")) }
   end
 end
 
@@ -344,7 +344,7 @@ local function resolveVal(context, extra, valStr)
     if valStr == "transparent" then
       return -1
     elseif renderer.colorReference[valStr] then
-      return 2^renderer.colorReference[valStr][1]
+      return 2 ^ renderer.colorReference[valStr][1]
     elseif not valStr then
       return 0
     else
@@ -354,56 +354,56 @@ local function resolveVal(context, extra, valStr)
 end
 
 function renderer.processStyles(styles)
-  local rulesets, order
+  local rulesets
 
   if styles then
-    rulesets, order = css(styles)
-    renderer.styles = {rulesets, order}
+    rulesets = css(styles)
+    renderer.styles = rulesets
 
-    local colorSet, colorOrder
-    if rulesets.colors then
-      colorSet = rulesets.colors
-      for i = 1, #order do
-        if order[i][1] == "colors" then
-          colorOrder = order[i][2]
-        end
+    local colorI
+    for i = 1, #rulesets do
+      if rulesets[i][1] == "colors" then
+        colorI = i
+        break
       end
+    end
+
+    local colorSet
+    if colorI then
+      colorSet = rulesets[colorI][2]
     else
       -- ComputerCraft Default Palette
       colorSet = {
-        white =      "#F0F0F0",
-        orange =     "#F2B233",
-        magenta =    "#E57FD8",
-        lightBlue =  "#99B2F2",
-        yellow =     "#DEDE6C",
-        lime =       "#7FCC19",
-        pink =       "#F2B2CC",
-        gray =       "#4C4C4C",
-        lightGray =  "#999999",
-        cyan =       "#4C99B2",
-        purple =     "#B266E5",
-        blue =       "#3366CC",
-        brown =      "#7F664C",
-        green =      "#57A64E",
-        red =        "#CC4C4C",
-        black =      "#191919"
+        { "white", "#F0F0F0" },
+        { "orange", "#F2B233" },
+        { "magenta", "#E57FD8" },
+        { "lightBlue", "#99B2F2" },
+        { "yellow", "#DEDE6C" },
+        { "lime", "#7FCC19" },
+        { "pink", "#F2B2CC" },
+        { "gray", "#4C4C4C" },
+        { "lightGray", "#999999" },
+        { "cyan", "#4C99B2" },
+        { "purple", "#B266E5" },
+        { "blue", "#3366CC" },
+        { "brown", "#7F664C" },
+        { "green", "#57A64E" },
+        { "red", "#CC4C4C" },
+        { "black", "#191919" }
       }
-
-      colorOrder = {"white", "orange", "magenta", "lightBlue", "yellow", "lime", "pink", "gray",
-                    "lightGray", "cyan", "purple", "blue", "brown", "green", "red", "black"}
     end
 
     local toTab = {}
 
     local ci = 0
-    for i = 1, #colorOrder do
+    for i = 1, #colorSet do
       if ci == 16 then
         return error("Too many colors")
       end
 
-      local color, hex = colorOrder[i], colorSet[colorOrder[i]]
+      local color, hex = colorSet[i][1], colorSet[i][2]
 
-      toTab[color:match("^%-?%-?([^%-]+)$")] = {ci, hex:match("#(.+)")}
+      toTab[color:match("^%-?%-?([^%-]+)$")] = { ci, hex:match("#(.+)") }
       ci = ci + 1
     end
 
@@ -411,19 +411,21 @@ function renderer.processStyles(styles)
 
     renderer.colorReference = colorSet
   else
-    rulesets, order = renderer.styles[1], renderer.styles[2]
+    rulesets = renderer.styles
   end
 
-  for rulesetI = 1, #order do
-    local k = order[rulesetI][1]
-    local v = rulesets[order[rulesetI][1]]
+  for rulesetI = 1, #rulesets do
+    local k = rulesets[rulesetI][1]
+    local v = rulesets[rulesetI][2]
     local matches = querySelector(k)
 
     for i = 1, #matches do
       local matchedEl = matches[i]
       matchedEl.styles = matchedEl.styles or {}
 
-      for prop, val in pairs(v) do
+      for j = 1, #v do
+        local prop = v[j][1]
+        local val = v[j][2]
         matchedEl.styles[prop] = val
       end
     end
@@ -475,38 +477,46 @@ function renderer.renderToSurface(surf, node, context)
 
     if s.display ~= "none" then
       local px, py, pw, ph =
-        context.flowX, context.flowY,
-        context.flowW, context.flowH
+      context.flowX, context.flowY,
+      context.flowW, context.flowH
 
---      if s.position == "absolute" then
---        context = {
---          flowX = 0,
---          flowY = 0,
---          flowW = surf.width,
---          flowH = surf.height,
---          width = surf.width,
---          height = surf.height
---        }
---      end
+      if s.position == "absolute" then
+        context = {
+          flowX = context.flowX,
+          flowY = context.flowY,
+          flowW = surf.width,
+          flowH = surf.height,
+          width = surf.width,
+          height = surf.height
+        }
+
+        if s.left or s.right then
+          context.flowX = 0
+        end
+
+        if s.top or s.bottom then
+          context.flowY = 0
+        end
+      end
 
       local width, height
       width = resolveVal(context, "width", s.width or "100rem")
 
       if not s.height and el.adapter and el.adapter.resolveHeight then
-        s.height = el.adapter:resolveHeight(s, {flow = context, width = width}, resolveVal)
+        s.height = el.adapter:resolveHeight(s, { flow = context, width = width }, resolveVal)
       end
       height = resolveVal(context, "height", s.height or "100rem")
 
       local left
       if s.right then
-        left = resolveVal(context, {type="right", width=width}, s.right)
+        left = resolveVal(context, { type = "right", width = width }, s.right)
       else
         left = resolveVal(context, "left", s.left or "0")
       end
 
       local top
       if s.bottom then
-        top = resolveVal(context, {type="bottom", height=height}, s.bottom)
+        top = resolveVal(context, { type = "bottom", height = height }, s.bottom)
       else
         top = resolveVal(context, "top", s.top or "0")
       end

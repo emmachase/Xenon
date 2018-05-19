@@ -58,7 +58,8 @@ for k, v in pairs(renderer.colorReference) do
 end
 
 local exampleData = {
-  ["minecraft:iron_ingot::0"] = 14,
+  ["minecraft:gold_ingot::0"] = 412,
+  ["minecraft:iron_ingot::0"] = 4,
   ["minecraft:diamond::0"] = 27
 }
 
