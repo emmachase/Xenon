@@ -79,10 +79,9 @@ local function dispense(mcname, count)
 
     for i = #slotList[mcname], 1, -1 do
       local chestPeriph = chestPeriphs[slotList[mcname][i][3]]
-      chestPeriph.pushItems(config.self, slotList[mcname][i][1], count)
+      local amountPushed = chestPeriph.pushItems(config.self, slotList[mcname][i][1], count)
 
-      local psh = math.min(count, slotList[mcname][i][2])
-      count = count - psh
+      count = count - amountPushed
 
       if count <= 0 then
         break

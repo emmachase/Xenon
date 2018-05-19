@@ -24,7 +24,7 @@ jua.setInterval(function()
 
     updateTimer = 0
   end
-end, 1)
+end, intervalInc)
 
 jua.on("terminate", function()
   if ws then ws.close() end
