@@ -118,7 +118,6 @@ function basicTextComponent:render(surf, position, styles, resolver)
             position.left + leftPad, cY, position.width - leftPad - rightPad,
             resolver({}, "color", styles.color), styles["text-align"] or "left")
           acc = ""
-          cY = cY + 1
         elseif children[i].name == "span" then
           acc = acc .. children[i].children[1].content
         end
