@@ -20,7 +20,7 @@ if userLayout then
 end
 
 if userStyles then
-  layout = userStyles.readAll()
+  styles = userStyles.readAll()
   userStyles.close()
 end
 
