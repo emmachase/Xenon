@@ -1,6 +1,8 @@
 -- vim: syntax=lua
 -- luacheck: globals loadRemote getRemote fs loadstring peripheral
 
+local versionTag = "v0.0.1"
+
 local args = {...}
 local layoutMode = args[1] == "--layout" or args[1] == "-l"
 
@@ -28,6 +30,8 @@ local function xenon()
   configHandle.close()
 
   --#include "src/sections/requires.lua"
+
+  --#include "src/sections/updates.lua"
 
   --#include "src/sections/renderer.lua"
 
