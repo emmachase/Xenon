@@ -9,7 +9,7 @@ local discordName = config.discordName
 local externName
 
 local function time()
-  return os.day("utc") .. "-" .. os.time("utc")
+  return os.epoch()
 end
 
 function logger.init(prints, tExternName, noColor)
