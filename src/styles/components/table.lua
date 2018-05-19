@@ -195,7 +195,7 @@ function tableComponent:updateData(data)
 
       if name then
         name.children = { makeTextEl(config.items[k].disp or k, name) }
-        addClass(stock, "name")
+        addClass(name, "name")
       end
 
       if price then

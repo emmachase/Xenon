@@ -1,0 +1,134 @@
+/* Think of this file as your reference:
+    Everything that can be customized is in here
+    And everything that is not in here, cannot be customized */
+
+colors {
+    --white:     #F0F0F0;
+    --orange:    #F2B233;
+    --magenta:   #E57FD8;
+    --lightBlue: #99B2F2;
+    --yellow:    #DEDE6C;
+    --lime:      #7FCC19;
+    --pink:      #F2B2CC;
+    --gray:      #4C4C4C;
+    --lightGray: #999999;
+    --cyan:      #4C99B2;
+    --purple:    #B266E5;
+    --blue:      #3366CC;
+    --brown:     #7F664C;
+    --green:     #57A64E;
+    --red:       #CC4C4C;
+    --black:     #191919;
+}
+
+* {
+    display: block;
+}
+
+body {
+    background-color: lightBlue;
+}
+
+header {
+    position: relative;
+
+    /* content: "My Shop"; */
+    /* background: url(myLogo.nfp); */
+    /* background-position: center; */
+    /* Content and Background (Images) are mutually exclusive, with content taking precedence if both are present */
+
+    background-color: blue;
+
+    width: 100%;
+    padding: 1px;
+
+    color: white;
+    text-align: left;
+
+    font-size: 2em; /* Either 1em or 2em, no other sizes are currently supported */
+}
+
+aside {
+    position: relative;
+    left: 0;
+
+    width: 100%;
+    height: 4px; /* In Xenon CSS, rem doesn't stand for Root Em, it stands for Remaining space, so this is 100% of the remaining space */
+
+    text-align: left;
+    padding: 1px;
+    
+    background-color: blue;
+    color: white;
+}
+
+table {
+    position: relative;
+
+    background-color: blue;
+
+    width: 100%;
+    height: calc(100rem - 4px); /* See note under aside height */
+}
+
+thead tr {
+    background-color: gray;
+}
+
+tbody tr {
+    line-height: 3px;
+}
+
+tbody tr:nth-child(2n) {
+    background-color: lightGray;
+}
+
+tbody tr:nth-child(2n + 1) {
+    background-color: white;
+}
+
+td {
+    color: black;
+    padding: 0 1px 0 0;
+}
+
+.stock {
+    color: lightGray;
+    width: 7px;
+}
+
+tr:nth-child(2n) .stock {
+    color: gray;
+}
+
+.stock.critical {
+    color: red;
+}
+
+.name {
+    flex: 1; /* tr elements implicitly have flex-box like behavior, it is the only element that (currently) supports this feature */
+    padding: 0 1px 0 2px;
+}
+
+.price-container, .price {
+    text-align: left;
+    width: 10px;
+}
+
+.addy-full, .addy {
+    color: lightGray;
+    width: 15px;
+}
+
+tr:nth-child(2n) .addy-full {
+    color: gray;
+}
+
+th {
+    color: white;
+    padding: 1px 1px 1px 0;
+}
+
+th.name {
+    padding: 1px 1px 1px 2px;
+}

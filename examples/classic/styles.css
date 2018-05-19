@@ -1,0 +1,125 @@
+/* Think of this file as your reference:
+    Everything that can be customized is in here
+    And everything that is not in here, cannot be customized */
+
+colors {
+    --white:     #c8d6e5;
+    --gray:      #576574;
+    --lightGray: #8395a7;
+    --purple:    #5f27cd;
+    --blue:      #341f97;
+    --red:       #ee5253;
+    --black:     #222f3e;
+
+    --yellow:    #dede6c;
+    --green:     #57a64e;
+}
+
+* {
+    display: block;
+}
+
+body {
+    background-color: black;
+}
+
+header {
+    position: relative;
+
+    /* content: "My Shop"; */
+    /* background: url(myLogo.nfp); */
+    /* background-position: center; */
+    /* Content and Background (Images) are mutually exclusive, with content taking precedence if both are present */
+
+    background-color: purple;
+
+    width: 100%;
+    padding: 1px;
+
+    color: white;
+    text-align: left;
+
+    font-size: 2em; /* Either 1em or 2em, no other sizes are currently supported */
+}
+
+aside {
+    position: absolute;
+    right: 0;
+
+    /* Since `top` (and bottom) are omitted here, it will be positioned relative to the last positioned element,
+        which is exactly where we want it to be.. */
+
+    width: 30px;
+    height: 100rem; /* In Xenon CSS, rem doesn't stand for Root Em, it stands for Remaining space, so this is 100% of the remaining space */
+
+    text-align: left;
+    padding: 1px;
+    
+    background-color: blue;
+    color: white;
+}
+
+table {
+    position: relative;
+
+    background-color: black;
+
+    width: calc(100% - 30px);
+    height: calc(100rem - 2px); /* See note under aside height */
+}
+
+td {
+    color: white;
+    padding: 0 1px 0 0;
+}
+
+.stock {
+    color: lightGray;
+    text-align: right;
+    width: 7px;
+}
+
+.stock.low {
+    color: yellow;
+}
+
+.stock.critical {
+    color: red;
+}
+
+.name {
+    flex: 1; /* tr elements implicitly have flex-box like behavior, it is the only element that (currently) supports this feature */
+}
+
+.price-container, .price {
+    text-align: right;
+    width: 10px;
+}
+
+.addy-full, .addy {
+    color: lightGray;
+    width: 15px;
+}
+
+th {
+    color: white;
+    padding: 1px 1px 1px 0;
+}
+
+/* This is a pretty unreliable rule, just saves a few chars */
+/* If you plan on changing the structure, you will most likely need to change this */
+th:nth-child(2n + 1) {
+    text-align: right;
+}
+
+details {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+
+    background-color: transparent;
+    color: gray;
+
+    width: calc(100% - 30px);
+    height: 1px;
+}
