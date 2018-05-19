@@ -36,7 +36,9 @@ function xmlutils.parse(buffer)
         error("Unexpected character")
       end
 
-      parsePoint.children[#parsePoint.children + 1] = {type = "text", content = buffer:sub(1, nxtLoc - 1), parent = parsePoint}
+      local cnt = buffer:sub(1, nxtLoc - 1)
+      cnt = cnt:gsub("%&nbsp%;", " ")
+      parsePoint.children[#parsePoint.children + 1] = {type = "text", content = cnt, parent = parsePoint}
       buffer = buffer:sub(nxtLoc)
     elseif nxtLoc == 1 and capt == "</" then
       -- Closing tag

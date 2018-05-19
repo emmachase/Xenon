@@ -11,7 +11,9 @@ end
 local function makeTextEl(content, parent)
   return {
     type = "text",
-    content = content,
+    content = (parent.properties.prepend or "")
+              .. content ..
+              (parent.properties.append or ""),
     parent = parent
   }
 end

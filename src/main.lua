@@ -1,10 +1,13 @@
 -- vim: syntax=lua
 -- luacheck: globals loadRemote getRemote fs loadstring peripheral
 
+local args = {...}
+local layoutMode = args[1] == "--layout" or args[1] == "-l"
+
 local successTools = {}
 
 local function xenon()
-  if not turtle then
+  if not (turtle or layoutMode) then
     error("Xenon must run on a turtle")
   end
 
@@ -28,21 +31,45 @@ local function xenon()
 
   --#include "src/sections/renderer.lua"
 
-  local repaintMonitor -- Forward declaration
+  if layoutMode then
+    local exampleData = config.example or {
+      ["minecraft:gold_ingot::0"] = 412,
+      ["minecraft:iron_ingot::0"] = 4,
+      ["minecraft:diamond::0"] = 27
+    }
 
-  --#include "src/sections/peripherals.lua"
-  --#include "src/sections/inventory.lua"
-  --#include "src/sections/payments.lua"
+    local els = renderer.querySelector("table")
+    for i = 1, #els do
+      els[i].adapter:updateData(exampleData)
+    end
 
-  --#include "src/sections/display.lua"
+    for _, v in pairs(renderer.colorReference) do
+      term.setPaletteColor(2^v[1], tonumber(v[2], 16))
+    end
 
-  -- Initialize Item List
-  countItems()
+    local testSurf = surface.create(term.getSize())
 
-  --#include "src/sections/krist.lua"
+    renderer.renderToSurface(testSurf)
+    testSurf:output()
 
-  drawStartup()
-  --#include "src/sections/jua.lua"
+    os.pullEvent("mouse_click")
+  else
+    local repaintMonitor -- Forward declaration
+
+    --#include "src/sections/peripherals.lua"
+    --#include "src/sections/inventory.lua"
+    --#include "src/sections/payments.lua"
+
+    --#include "src/sections/display.lua"
+
+    -- Initialize Item List
+    countItems()
+
+    --#include "src/sections/krist.lua"
+
+    drawStartup()
+    --#include "src/sections/jua.lua"
+  end
 end
 
 local success, error = pcall(xenon)
