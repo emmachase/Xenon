@@ -18,6 +18,9 @@ end
 
 local function findID(url)
     local found = gfind(url, idPatt)
+    if not found then
+        return
+    end
     return tonumber(found[#found]:sub(found[#found]:find("%d+")))
 end
 
