@@ -1,7 +1,7 @@
 -- vim: syntax=lua
 -- luacheck: globals loadRemote getRemote fs loadstring peripheral
 
-local versionTag = "v0.0.5"
+local versionTag = "v0.0.6"
 
 local args = {...}
 local layoutMode = args[1] == "--layout" or args[1] == "-l"
@@ -22,7 +22,7 @@ local function xenon()
   local config
   local configFunc, err = loadstring("return " .. configHandle.readAll())
   if not configFunc then
-    error("Invalid config: " .. err)
+    error("Invalid config: Line " .. (err:match(":(%d+:.+)") or err))
   else
     config = configFunc()
   end

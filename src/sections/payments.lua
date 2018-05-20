@@ -8,7 +8,7 @@ local messages = {
 }
 
 if config.messages then
-  for k, v in config.messages do
+  for k, v in pairs(config.messages) do
     messages[k] = v
   end
 end
