@@ -10,7 +10,7 @@ if config.checkForUpdates ~= false then
         local release = json.decode(releaseData)
         if release.tag_name ~= versionTag then
           logger.warn("Version mismatch, latest release is "
-            .. release.version_tag .. ", but running version is " .. versionTag)
+            .. release.tag_name .. ", but running version is " .. versionTag)
         end
 
         jua.off("http_failure", fail)
