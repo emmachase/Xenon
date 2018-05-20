@@ -1,9 +1,15 @@
 local ghURL = "https://api.github.com/repos/incinirate/Xenon/releases/latest"
 
 if config.checkForUpdates ~= false then
-  local handle = http.get(ghURL)
+  local success = http.request(ghURL)
 
-  if handle then
+  if not success then
+      logger.warn("Unable to fetch release data")
+  end
+end
+
+jua.on("http_success", function(url, handle)
+  if url == ghURL then
     local releaseData = handle.readAll()
     handle.close()
 
@@ -12,7 +18,11 @@ if config.checkForUpdates ~= false then
       logger.warn("Version mismatch, latest release is "
         .. release.version_tag .. ", but running version is " .. versionTag)
     end
-  else
-      logger.warn("Unable to fetch release data")
   end
-end
+end)
+
+jua.on("http_failure", function(url)
+  if url == ghURL then
+    logger.warn("Unable to fetch release data")
+  end
+end)
