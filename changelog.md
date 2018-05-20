@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - Fix redstone/inventory intervals being longer than configured
+- `line-height` property now works correctly
 
 ## 0.0.1 - 2018-05-19
 ### Added

@@ -45,11 +45,9 @@ function basicTextComponent:render(surf, position, styles, resolver)
   --  local bottomPad = resolver({}, "number", pads[3] or pads[1])
   local leftPad = resolver({}, "number", pads[4] or pads[2] or pads[1])
 
+  local lineHeight = 1
   if styles["line-height"] then
-    local lh = resolver({}, "number", styles["line-height"])
-
-    topPad = topPad + math.floor((lh - 1) / 2)
---    bottomPad = bottomPad + math.ceil((lh - 1) / 2)
+    lineHeight = resolver({}, "number", styles["line-height"])
   end
 
   local cY = position.top + topPad
@@ -93,7 +91,7 @@ function basicTextComponent:render(surf, position, styles, resolver)
     else
       util.wrappedWrite(surf, resolver({}, "string", styles.content),
         position.left + leftPad, cY, position.width - leftPad - rightPad,
-        resolver({}, "color", styles.color), styles["text-align"] or "left")
+        resolver({}, "color", styles.color), styles["text-align"] or "left", lineHeight)
     end
   else
     if styles["font-size"] == "2em" then
@@ -116,7 +114,7 @@ function basicTextComponent:render(surf, position, styles, resolver)
         elseif children[i].name == "br" then
           cY = util.wrappedWrite(surf, acc,
             position.left + leftPad, cY, position.width - leftPad - rightPad,
-            resolver({}, "color", styles.color), styles["text-align"] or "left")
+            resolver({}, "color", styles.color), styles["text-align"] or "left", lineHeight)
           acc = ""
         elseif children[i].name == "span" then
           acc = acc .. children[i].children[1].content
@@ -125,7 +123,7 @@ function basicTextComponent:render(surf, position, styles, resolver)
       if #acc > 0 then
         util.wrappedWrite(surf, acc,
           position.left + leftPad, cY, position.width - leftPad - rightPad,
-          resolver({}, "color", styles.color), styles["text-align"] or "left")
+          resolver({}, "color", styles.color), styles["text-align"] or "left", lineHeight)
       end
     end
   end
@@ -143,13 +141,6 @@ function basicTextComponent:resolveHeight(styles, context, resolver)
   local leftPad = resolver({}, "number", pads[4] or pads[2] or pads[1])
 
   local cY = 0
-
-  if styles["line-height"] then
-    local lh = resolver({}, "number", styles["line-height"])
-
-    topPad = topPad + math.floor((lh - 1) / 2)
-    bottomPad = bottomPad + math.ceil((lh - 1) / 2)
-  end
 
   if styles["background"] then
     local path = styles["background"]:match("url(%b())"):sub(2, -2)
@@ -177,6 +168,10 @@ function basicTextComponent:resolveHeight(styles, context, resolver)
       end
     end
     cY = cY + 1
+  end
+
+  if styles["line-height"] then
+    cy = cy * resolver({}, "number", styles["line-height"])
   end
 
   return (topPad + bottomPad + cY) .. "px"
