@@ -1,7 +1,7 @@
 -- vim: syntax=lua
 -- luacheck: globals loadRemote getRemote fs loadstring peripheral
 
-local versionTag = "v0.0.4"
+local versionTag = "v0.0.5"
 
 local args = {...}
 local layoutMode = args[1] == "--layout" or args[1] == "-l"

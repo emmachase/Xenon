@@ -13,7 +13,7 @@ else
     async = true
 end
 
-callbackRegistry = {}
+local callbackRegistry = {}
 wsRegistry = {}
 
 local function gfind(str, patt)

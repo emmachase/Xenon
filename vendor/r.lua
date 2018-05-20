@@ -1,7 +1,7 @@
 local jua = nil
 local idPatt = "#R%d+"
 
-callbackRegistry = {}
+local callbackRegistry = {}
 
 local function gfind(str, patt)
     local t = {}
@@ -19,7 +19,7 @@ end
 local function findID(url)
     local found = gfind(url, idPatt)
     if not found then
-        return
+        return -1
     end
     return tonumber(found[#found]:sub(found[#found]:find("%d+")))
 end
