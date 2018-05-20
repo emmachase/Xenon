@@ -12,14 +12,14 @@ jua.setInterval(function()
   redstoneTimer = redstoneTimer + intervalInc
   updateTimer = updateTimer + intervalInc
 
-  if config.redstoneSide and redstoneTimer > (config.redstoneInterval or 5) then
+  if config.redstoneSide and redstoneTimer >= (config.redstoneInterval or 5) then
     lightVal = not lightVal
     rs.setOutput(config.redstoneSide, lightVal)
 
     redstoneTimer = 0
   end
 
-  if updateTimer > (config.updateInterval or 30) then
+  if updateTimer >= (config.updateInterval or 30) then
     countItems()
 
     updateTimer = 0
