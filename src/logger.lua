@@ -100,9 +100,9 @@ function logger.externMention(text)
 
   if discordURL then
     if discordName then
-      http.post(discordURL, [[payload={"username": "]] .. externName .. [[", "content":"<@]] .. discordName .. [[> ]] .. textutils.urlEncode(text) .. [["}]])
+      http.post(discordURL, [[{"username": "]] .. externName .. [[", "content":"<@]] .. discordName .. [[> ]] .. textutils.urlEncode(text) .. [["}]])
     else
-      http.post(discordURL, [[payload={"username": "]] .. externName .. [[", "content":"]] .. textutils.urlEncode(text) .. [["}]])
+      http.post(discordURL, [[{"username": "]] .. externName .. [[", "content":"]] .. textutils.urlEncode(text) .. [["}]])
     end
   end
 end

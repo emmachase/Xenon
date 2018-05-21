@@ -26,7 +26,7 @@ local util = require("util.lua")
 --#require "vendor/jua.lua" as jua
 
 --#require "src/logger.lua" as logger
-logger.init(true)
+logger.init(true, config.title)
 successTools.logger = logger
 
 --#require "src/util.lua" as util

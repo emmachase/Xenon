@@ -24,6 +24,15 @@ end
 local chestPeriphs = {}
 for i = 1, #config.chests do
   chestPeriphs[#chestPeriphs + 1] = peripheral.wrap(config.chests[i])
+
+  if not chestPeriphs[#chestPeriphs] then
+    chestPeriphs[#chestPeriphs] = nil
+    logger.error("No chest by name '" .. config.chests[i] .. "'")
+  end
+end
+
+if #chestPeriphs == 0 then
+  error("No valid chest(s) could be found")
 end
 
 if not config.self then
@@ -57,6 +66,10 @@ if not config.monitor then
   end
 else
   monPeriph = peripheral.wrap(config.monitor)
+
+  if not (monPeriph and monPeriph.setPaletteColor) then
+    error("No monitor by name '" .. monPeriph .. "' could be found")
+  end
 end
 
 monPeriph.setTextScale(0.5)
