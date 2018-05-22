@@ -1,5 +1,13 @@
 local util = {}
 
+function util.toListName(modid, damage, pred)
+  return name .. "::" .. damage .. "::" .. pred
+end
+
+function util.fromListName(lName)
+  return lName:match("^(.-)::")
+end
+
 function util.wrappedWrite(surf, text, x, y, width, color, align, lineHeight)
   lineHeight = lineHeight or 1
 
@@ -61,6 +69,52 @@ end
 function util.round(num, numDecimalPlaces)
   local mult = 10^(numDecimalPlaces or 0)
   return math.floor(num * mult + 0.5) / mult
+end
+
+function util.matchPredicate(predicate, tab)
+  for k, v in pairs(predicate) do
+    if not tab[k] then
+      return false
+    end
+
+    if type(v) == "table" then
+      return util.matchPredicate(v, tab[k])
+    else
+      if tab[k] ~= v then
+        return false
+      end
+    end
+  end
+
+  return true
+end
+
+function util.equals(val1, val2)
+  local typeV = type(val1)
+  
+  if typeV ~= type(val2) then
+    return false
+  end
+
+  if typeV ~= "table" then
+    return val1 == val2
+  end
+
+  local lengthV1 = 0
+  for k, v in pairs(val1) do
+    lengthV1 = lengthV1 + 1
+
+    if not util.equals(v, val2[k]) then
+      return false
+    end
+  end
+
+  local lengthV2 = 0
+  for _ in pairs(val2) do
+    lengthV2 = lengthV2 + 1
+  end
+
+  return lengthV1 == lengthV2
 end
 
 return util

@@ -11,6 +11,8 @@ local layoutMode = args[1] == "--layout" or args[1] == "-l"
 local successTools = {}
 
 local function xenon()
+  --#require "src/util.lua" as util
+
   if not (turtle or layoutMode) then
     error("Xenon must run on a turtle")
   end

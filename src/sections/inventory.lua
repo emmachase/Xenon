@@ -1,13 +1,5 @@
 --== Various Helper Functions ==--
 
-local function toListName(name, damage)
-  return name .. "::" .. damage
-end
-
-local function fromListName(lName)
-  return lName:match("(.+)%:%:")
-end
-
 local function anyFree()
   local c = 0
   for i = 1, 16 do
@@ -21,15 +13,22 @@ end
 
 local list -- Item count list
 local slotList -- Keep track of which slots (in chests) items are located
+local hasPredCache -- Keep track of which items have predicates
 local function countItems()
   list = {}
+  hasPredCache = {}
   slotList = {}
 
   if config.showBlanks then
-    for k, v in pairs(config.items) do
-      local lName = toListName(k, v.damage or 0)
+    foreach(item, config.items) do
+      local bName = util.toListName(item.modid, item.damage or 0, 0)
+      local lName = util.toListName(item.modid, item.damage or 0, item.predicateID or 0)
       list[lName] = 0
       slotList[lName] = {}
+
+      if not hasPredCache[bName] then
+        hasPredCache[bName] = item.predicateID ~= nil
+      end
     end
   end
 
@@ -40,28 +39,32 @@ local function countItems()
       logger.error("Unable to list chest '" .. ck .. "'")
     else
       for k, v in pairs(cTable) do
-        local lName = toListName(v.name, v.damage)
+        local bName = util.toListName(v.name, v.damage, 0)
+        
+        local predicateID = 0
+        if hasPredCache[bName] then
+          -- This item has known predicates, find which one
+          for predicateID = 1, #predicateCache do
+            -- TODO transform v with getItemMeta if initial match fails
+            if util.matchPredicate(predicateCache[predicateID], v) then
+              predicateID = predicateID
+            end
+          end
+        end
 
-        if not list[lName] then
-          list[lName] = v.count
-          slotList[lName] = { { k, v.count, ck } }
-        else
-          list[lName] = list[lName] + v.count
-          slotList[lName][#slotList[lName] + 1] = { k, v.count, ck }
+        local lName = util.toListName(v.name, v.damage, predicateID)
+
+        if transformedItems[lName] then
+          if not list[lName] then
+            list[lName] = v.count
+            slotList[lName] = { { k, v.count, ck } }
+          else
+            list[lName] = list[lName] + v.count
+            slotList[lName][#slotList[lName] + 1] = { k, v.count, ck }
+          end
         end
       end
     end
-  end
-
-  local rm = {}
-  for k, _ in pairs(list) do
-    if not config.items[fromListName(k)] then
-      rm[#rm + 1] = k
-    end
-  end
-
-  for i = 1, #rm do
-    list[rm[i]] = nil
   end
 
   local els = renderer.querySelector("table")
@@ -111,7 +114,7 @@ end
 local function findItem(name)
   for k, item in pairs(config.items) do
     if item.addy == name then
-      return item, toListName(k, item.damage or 0)
+      return item, util.toListName(k, item.damage or 0)
     end
   end
 

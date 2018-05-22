@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Added
+- Major version mismatch safety warning
+
+### Fixed
+- Fixed compatibility for multiple items with the same modid
+
 ## 0.0.7 - 2018-05-20
 ### Added
 - Added sanity checks for peripheral wraps

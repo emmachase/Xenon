@@ -11,6 +11,10 @@ if config.checkForUpdates ~= false then
         if release.tag_name ~= versionTag then
           logger.warn("Version mismatch, latest release is "
             .. release.tag_name .. ", but running version is " .. versionTag)
+
+          if release.tag_name:match("v(%d+)") ~= versionTag:match("v(%d+)") then
+            logger.warn("Latest version has a major version seperation gap, it may not be safe to update. Review the changelog for more details.")
+          end
         end
       end 
     else
