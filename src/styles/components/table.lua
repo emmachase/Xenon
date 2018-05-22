@@ -50,8 +50,8 @@ function tableComponent.new(node, renderer)
   end
 
   local tel = renderer.querySelector("th", node)
-  for i = 1, #tel do
-    tel[i].adapter = renderer.components.text.new(tel[i])
+  foreach(th, tel)
+    th.adapter = renderer.components.text.new(th)
   end
 
   return setmetatable(t, { __index = tableComponent })
@@ -68,9 +68,7 @@ function tableComponent:render(surf, position, styles, resolver)
   local rows = self.renderer.querySelector("tr", self.node)
 
   local flowY = position.top
-  for i = 1, #rows do
-    local row = rows[i]
-
+  foreach(row, rows) do
     local flowX = position.left
     local maxH = 0
 
@@ -78,9 +76,7 @@ function tableComponent:render(surf, position, styles, resolver)
     local remWidth = position.width
     local widths = {}
 
-    for j = 1, #row.children do
-      local td = row.children[j]
-
+    foreach(td, row.children) do
       if td.styles.width then
         local w = resolver({width = position.width, flowW = remWidth}, "width", td.styles.width)
         remWidth = remWidth - w
@@ -90,9 +86,7 @@ function tableComponent:render(surf, position, styles, resolver)
       end
     end
 
-    for j = 1, #row.children do
-      local td = row.children[j]
-
+    foreach(td, row.children) do
       if row.styles["line-height"] and not td.styles["line-height"] then
         td.styles["line-height"] = row.styles["line-height"]
       end
@@ -172,8 +166,8 @@ function tableComponent:updateData(data)
       skeleton.parent = body
 
       local tel = self.renderer.querySelector("td", skeleton)
-      for i = 1, #tel do
-        tel[i].adapter = self.renderer.components.text.new(tel[i])
+      foreach(td, tel) do
+        td.adapter = self.renderer.components.text.new(td)
       end
 
       local stock = self.renderer.querySelector("#stock", skeleton)[1]

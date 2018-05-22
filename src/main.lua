@@ -1,6 +1,8 @@
 -- vim: syntax=lua
 -- luacheck: globals loadRemote getRemote fs loadstring peripheral
 
+--#include "src/macros.lua"
+
 local versionTag = "v0.0.7"
 
 local args = {...}
@@ -28,6 +30,8 @@ local function xenon()
   end
 
   configHandle.close()
+
+  --#include "src/sections/transformations.lua"
 
   --#include "src/sections/requires.lua"
 

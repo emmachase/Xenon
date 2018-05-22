@@ -108,16 +108,17 @@ function basicTextComponent:render(surf, position, styles, resolver)
     else
       local children = self.node.children
       local acc = ""
-      for i = 1, #children do
-        if children[i].type == "text" then
-          acc = acc .. children[i].content
-        elseif children[i].name == "br" then
+      
+      foreach(child, children) do
+        if child.type == "text" then
+          acc = acc .. child.content
+        elseif child.name == "br" then
           cY = util.wrappedWrite(surf, acc,
             position.left + leftPad, cY, position.width - leftPad - rightPad,
             resolver({}, "color", styles.color), styles["text-align"] or "left", lineHeight)
           acc = ""
-        elseif children[i].name == "span" then
-          acc = acc .. children[i].children[1].content
+        elseif child.name == "span" then
+          acc = acc .. child.children[1].content
         end
       end
       if #acc > 0 then
@@ -155,16 +156,16 @@ function basicTextComponent:resolveHeight(styles, context, resolver)
   else
     local children = self.node.children
     local acc = ""
-    for i = 1, #children do
-      if children[i].type == "text" then
-        acc = acc .. children[i].content
-      elseif children[i].name == "br" then
+    foreach(child, children) do
+      if child.type == "text" then
+        acc = acc .. child.content
+      elseif child.name == "br" then
         cY = util.wrappedWrite(nil, acc,
           position.left + leftPad, cY, position.width - leftPad - rightPad)
         acc = ""
         cY = cY + 1
-      elseif children[i].name == "span" then
-        acc = acc .. children[i].children[1].content
+      elseif child.name == "span" then
+        acc = acc .. child.children[1].content
       end
     end
     cY = cY + 1

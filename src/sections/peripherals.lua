@@ -8,9 +8,9 @@ end
 if not config.chests then
   local periphs = peripheral.getNames()
   local chest
-  for i = 1, #periphs do
-    if periphs[i]:match("chest") then
-      chest = periphs[i]
+  foreach(periph, periphs) do
+    if periph:match("chest") then
+      chest = periph
     end
   end
 
@@ -22,12 +22,12 @@ if not config.chests then
 end
 
 local chestPeriphs = {}
-for i = 1, #config.chests do
-  chestPeriphs[#chestPeriphs + 1] = peripheral.wrap(config.chests[i])
+foreach(chest, config.chests) do
+  chestPeriphs[#chestPeriphs + 1] = peripheral.wrap(chest)
 
   if not chestPeriphs[#chestPeriphs] then
     chestPeriphs[#chestPeriphs] = nil
-    logger.error("No chest by name '" .. config.chests[i] .. "'")
+    logger.error("No chest by name '" .. chest .. "'")
   end
 end
 
@@ -39,9 +39,9 @@ if not config.self then
   -- Attempt to find by chestPeriph reverse search
   local cp = chestPeriphs[1]
   local list = cp.getTransferLocations()
-  for i = 1, #list do
-    if list[i]:match("^turtle") then
-      config.self = list[i]
+  foreach(loc, list) do
+    if loc:match("^turtle") then
+      config.self = loc
       logger.warn("config.self not specified, assuming turtle connection '" .. config.self .. "'")
 
       break
