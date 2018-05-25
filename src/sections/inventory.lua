@@ -19,27 +19,29 @@ local function countItems()
   hasPredCache = {}
   slotList = {}
 
-  if config.showBlanks then
-    foreach(item, config.items) do
-      local bName = util.toListName(item.modid, item.damage or 0, 0)
+  -- Perform some initial transformations on the data
+  foreach(item, config.items) do
+    local bName = util.toListName(item.modid, item.damage or 0, 0)
+    if not hasPredCache[bName] then
+      hasPredCache[bName] = item.predicateID ~= nil
+    end
+
+    if config.showBlanks then
       local lName = util.toListName(item.modid, item.damage or 0, item.predicateID or 0)
       list[lName] = 0
       slotList[lName] = {}
-
-      if not hasPredCache[bName] then
-        hasPredCache[bName] = item.predicateID ~= nil
-      end
     end
   end
-
+  
+  -- Iterate over all known chests
   for ck = 1, #chestPeriphs do
     local chestPeriph = chestPeriphs[ck]
     local cTable = chestPeriph.list()
     if not cTable then
       logger.error("Unable to list chest '" .. ck .. "'")
     else
-      for k, v in pairs(cTable) do
-        local bName = util.toListName(v.name, v.damage, 0)
+      for k, v in pairs(cTable) do -- For each item..
+        local bName = util.toListName(v.name, v.damage, 0) -- Simplified name to check if deep predicate matching is required
         
         local predicateID = 0
         if hasPredCache[bName] then
@@ -51,6 +53,7 @@ local function countItems()
             end
           end
         end
+
 
         local lName = util.toListName(v.name, v.damage, predicateID)
 
@@ -67,7 +70,7 @@ local function countItems()
     end
   end
 
-  local els = renderer.querySelector("table")
+  local els = renderer.querySelector("table.stock")
   for i = 1, #els do
     els[i].adapter:updateData(list)
   end

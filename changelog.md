@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - Fixed compatibility for multiple items with the same modid
 
+### Changed
+- Tables **must** have class 'stock' to be filled with stock data
+
 ## 0.0.7 - 2018-05-20
 ### Added
 - Added sanity checks for peripheral wraps
