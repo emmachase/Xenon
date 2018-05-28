@@ -43,12 +43,23 @@ local function xenon()
 
   if layoutMode then
     local exampleData = config.example or {
-      ["minecraft:gold_ingot::0"] = 412,
-      ["minecraft:iron_ingot::0"] = 4,
-      ["minecraft:diamond::0"] = 27
+      ["minecraft:gold_ingot::0::0"] = 412,
+      ["minecraft:iron_ingot::0::0"] = 4,
+      ["minecraft:diamond::0::0"] = 27
     }
 
-    local els = renderer.querySelector("table")
+    local rmList = {}
+    for item in pairs(exampleData) do
+      if not transformedItems[item] then
+        rmList[#rmList + 1] = item
+      end
+    end
+
+    foreach(item, rmList) do
+      exampleData[item] = nil
+    end
+
+    local els = renderer.querySelector("table.stock-table")
     for i = 1, #els do
       els[i].adapter:updateData(exampleData)
     end

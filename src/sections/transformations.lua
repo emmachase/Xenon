@@ -3,6 +3,9 @@ local transformedItems = {}
 
 local predicateCache = {}
 local predicateIDCounter = 0
+print("lesgo")
+print(tostring(config.items))
+print(tostring(#config.items))
 foreach(item, config.items) do
   if item.predicate then
     for predicateID = 1, #predicateCache do
@@ -20,5 +23,6 @@ foreach(item, config.items) do
     end
   end
 
+  print("yo?")
   transformedItems[util.toListName(item.modid, item.damage or 0, item.predicateID or 0)] = item
 end

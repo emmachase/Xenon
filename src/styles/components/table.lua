@@ -74,9 +74,12 @@ function tableComponent:render(surf, position, styles, resolver)
 
     local flexTot = 0
     local remWidth = position.width
+    print("TOTWIDTH: " .. position.width)
     local widths = {}
 
-    foreach(td, row.children) do
+    --foreach(td, row.children) do
+    for j = 1, #row.children do
+      local td = row.children[j]
       if td.styles.width then
         local w = resolver({width = position.width, flowW = remWidth}, "width", td.styles.width)
         remWidth = remWidth - w
@@ -86,7 +89,9 @@ function tableComponent:render(surf, position, styles, resolver)
       end
     end
 
-    foreach(td, row.children) do
+    --foreach(td, row.children) do
+    for j = 1, #row.children do
+      local td = row.children[j]
       if row.styles["line-height"] and not td.styles["line-height"] then
         td.styles["line-height"] = row.styles["line-height"]
       end
@@ -99,6 +104,7 @@ function tableComponent:render(surf, position, styles, resolver)
       else
         width = math.floor(remWidth * ((tonumber(td.styles.flex) or 1) / flexTot))
       end
+      print("Col " .. j .. " gets width " .. width .. "px")
 
       td.adapter:render(surf, {
         left = flowX,
@@ -111,6 +117,7 @@ function tableComponent:render(surf, position, styles, resolver)
 
       flowX = flowX + width
     end
+    read()
 
     if row.styles["background-color"] then
       local c = resolver({}, "color", row.styles["background-color"])
@@ -137,15 +144,20 @@ function tableComponent:updateData(data)
     end
 
     table.sort(sortedList, function(str1, str2)
-      local cOrder1 = config.items[fromListName(str1)].order
-      local cOrder2 = config.items[fromListName(str2)].order
+      print(str1)
+      print(str2)
+      for kk, vv in pairs(transformedItems) do
+        print(kk)
+      end
+      local cOrder1 = transformedItems[str1].order
+      local cOrder2 = transformedItems[str2].order
 
       if (cOrder1 or cOrder2) and (cOrder1 ~= cOrder2) then
         return (cOrder1 or math.huge) < (cOrder2 or math.huge)
       end
 
-      str1 = config.items[fromListName(str1)].disp
-      str2 = config.items[fromListName(str2)].disp
+      str1 = transformedItems[str1].disp
+      str2 = transformedItems[str2].disp
 
       local i = 0
       local c1, c2
@@ -159,7 +171,7 @@ function tableComponent:updateData(data)
     end)
 
     for sI = 1, #sortedList do
-      local k = fromListName(sortedList[sI])
+      local k = sortedList[sI]
       local v = tostring(data[sortedList[sI]])
 
       local skeleton = util.deepClone(self.rowTemplate)
@@ -182,35 +194,35 @@ function tableComponent:updateData(data)
         addClass(stock, "stock")
 
         v = tonumber(v)
-        if v < (config.items[k].critical or config.criticalStock or 10) then
+        if v < (transformedItems[k].critical or config.criticalStock or 10) then
           addClass(stock, "critical")
-        elseif v < (config.items[k].low or config.lowStock or 50) then
+        elseif v < (transformedItems[k].low or config.lowStock or 50) then
           addClass(stock, "low")
         end
       end
 
       if name then
-        name.children = { makeTextEl(config.items[k].disp or k, name) }
+        name.children = { makeTextEl(transformedItems[k].disp or k, name) }
         addClass(name, "name")
       end
 
       if price then
-        price.children = { makeTextEl(config.items[k].price, price) }
+        price.children = { makeTextEl(transformedItems[k].price, price) }
         addClass(price, "price")
       end
 
       if pricePerStack then
-        pricePerStack.children = { makeTextEl(util.round(60 / config.items[k].price, 2), pricePerStack) }
+        pricePerStack.children = { makeTextEl(util.round(60 / transformedItems[k].price, 2), pricePerStack) }
         addClass(pricePerStack, "price-per-stack")
       end
 
       if addy then
-        addy.children = { makeTextEl(config.items[k].addy, addy) }
+        addy.children = { makeTextEl(transformedItems[k].addy, addy) }
         addClass(addy, "addy")
       end
 
       if addyFull then
-        addyFull.children = { makeTextEl(config.items[k].addy .. "@" .. config.name .. ".kst", addyFull) }
+        addyFull.children = { makeTextEl(transformedItems[k].addy .. "@" .. config.name .. ".kst", addyFull) }
         addClass(addyFull, "addy-full")
       end
 

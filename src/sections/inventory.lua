@@ -70,7 +70,7 @@ local function countItems()
     end
   end
 
-  local els = renderer.querySelector("table.stock")
+  local els = renderer.querySelector("table.stock-table")
   for i = 1, #els do
     els[i].adapter:updateData(list)
   end

@@ -494,8 +494,14 @@ function renderer.renderToSurface(surf, node, context)
         end
       end
 
+      print(surf.width)
+      print(context.flowW)
+      print(s.width or "100rem")
+
       local width, height
       width = resolveVal(context, "width", s.width or "100rem")
+      print(width)
+      read()
 
       if not s.height and el.adapter and el.adapter.resolveHeight then
         s.height = el.adapter:resolveHeight(s, { flow = context, width = width }, resolveVal)
