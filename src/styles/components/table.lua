@@ -74,10 +74,8 @@ function tableComponent:render(surf, position, styles, resolver)
 
     local flexTot = 0
     local remWidth = position.width
-    print("TOTWIDTH: " .. position.width)
     local widths = {}
 
-    --foreach(td, row.children) do
     for j = 1, #row.children do
       local td = row.children[j]
       if td.styles.width then
@@ -89,7 +87,6 @@ function tableComponent:render(surf, position, styles, resolver)
       end
     end
 
-    --foreach(td, row.children) do
     for j = 1, #row.children do
       local td = row.children[j]
       if row.styles["line-height"] and not td.styles["line-height"] then
@@ -104,7 +101,6 @@ function tableComponent:render(surf, position, styles, resolver)
       else
         width = math.floor(remWidth * ((tonumber(td.styles.flex) or 1) / flexTot))
       end
-      print("Col " .. j .. " gets width " .. width .. "px")
 
       td.adapter:render(surf, {
         left = flowX,
@@ -117,7 +113,6 @@ function tableComponent:render(surf, position, styles, resolver)
 
       flowX = flowX + width
     end
-    read()
 
     if row.styles["background-color"] then
       local c = resolver({}, "color", row.styles["background-color"])
@@ -144,11 +139,6 @@ function tableComponent:updateData(data)
     end
 
     table.sort(sortedList, function(str1, str2)
-      print(str1)
-      print(str2)
-      for kk, vv in pairs(transformedItems) do
-        print(kk)
-      end
       local cOrder1 = transformedItems[str1].order
       local cOrder2 = transformedItems[str2].order
 
