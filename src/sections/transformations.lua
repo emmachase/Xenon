@@ -16,7 +16,7 @@ foreach(item, config.items) do
       predicateIDCounter = predicateIDCounter + 1
 
       item.predicateID = predicateIDCounter
-      predicateCache[predicateID] = item.predicate
+      predicateCache[predicateIDCounter] = item.predicate
     end
   end
 
