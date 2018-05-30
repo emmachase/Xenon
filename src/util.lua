@@ -72,16 +72,35 @@ function util.round(num, numDecimalPlaces)
 end
 
 function util.matchPredicate(predicate, tab)
+  if not tab then
+    return false
+  end
+
   for k, v in pairs(predicate) do
-    if not tab[k] then
-      return false
+    local kType = type(k)
+    if kType ~= "number" then
+      if not tab[k] then
+        return false
+      end
     end
 
     if type(v) == "table" then
       return util.matchPredicate(v, tab[k])
     else
-      if tab[k] ~= v then
-        return false
+      if kType == "number" then
+        local found = false
+        for i = 1, #tab do
+          if tab[k] == v then
+            found = true
+            break
+          end
+        end
+
+        return found
+      else
+        if tab[k] ~= v then
+          return false
+        end
       end
     end
   end

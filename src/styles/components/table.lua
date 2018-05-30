@@ -1,13 +1,5 @@
 local tableComponent = {}
 
-local function toListName(name, damage)
-  return name .. "::" .. damage
-end
-
-local function fromListName(lName)
-  return lName:match("(.+)%:%:")
-end
-
 local function makeTextEl(content, parent)
   return {
     type = "text",

@@ -11,10 +11,14 @@ end
 
 --== Inventory Management Functions ==--
 
+local drawRefresh
+
 local list -- Item count list
 local slotList -- Keep track of which slots (in chests) items are located
 local hasPredCache -- Keep track of which items have predicates
 local function countItems()
+  local hasDrawnRefresh = false
+  
   list = {}
   hasPredCache = {}
   slotList = {}
@@ -48,19 +52,22 @@ local function countItems()
           -- This item has known predicates, find which one
 
           -- First see if we can match the predicate without making expensive meta calls
-          for predicateID = 1, #predicateCache do
-            if util.matchPredicate(predicateCache[predicateID], v) then
-              predicateID = predicateID
+          for chkPredicateID = 1, #predicateCache do
+            if util.matchPredicate(predicateCache[chkPredicateID], v) then
+              predicateID = chkPredicateID
               break
             end
           end
 
           -- Check detailed metadata
           if predicateID == 0 then
+            -- This may take a while, so make sure to alert potential customers while shop is unavaliable
+            -- TODO: ^^^^^ but only when sleep is required
+
             local cachedMeta = chestPeriph.getItemMeta(k)
-            for predicateID = 1, #predicateCache do
-              if util.matchPredicate(predicateCache[predicateID], cachedMeta) then
-                predicateID = predicateID
+            for chkPredicateID = 1, #predicateCache do
+              if util.matchPredicate(predicateCache[chkPredicateID], cachedMeta) then
+                predicateID = chkPredicateID
                 break
               end
             end
@@ -130,7 +137,7 @@ end
 local function findItem(name)
   for k, item in pairs(config.items) do
     if item.addy == name then
-      return item, util.toListName(k, item.damage or 0)
+      return item, util.toListName(item.modid, item.damage or 0, item.predicateID or 0)
     end
   end
 

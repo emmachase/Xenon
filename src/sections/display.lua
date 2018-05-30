@@ -24,3 +24,17 @@ local function drawStartup()
   monPeriph.setCursorPos(math.ceil((monW - #str) / 2), math.ceil(monH / 2))
   monPeriph.write(str)
 end
+
+-- Not local because of forward declaration
+function drawRefresh()
+  monPeriph.setPaletteColor(2^0, 0x2F3542)
+  monPeriph.setPaletteColor(2^1, 0x747D8C)
+
+  monPeriph.setBackgroundColor(2^0)
+  monPeriph.setTextColor(2^1)
+  monPeriph.clear()
+
+  local str = "Refreshing stock..."
+  monPeriph.setCursorPos(math.ceil((monW - #str) / 2), math.ceil(monH / 2))
+  monPeriph.write(str)
+end
