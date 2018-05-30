@@ -46,10 +46,23 @@ local function countItems()
         local predicateID = 0
         if hasPredCache[bName] then
           -- This item has known predicates, find which one
+
+          -- First see if we can match the predicate without making expensive meta calls
           for predicateID = 1, #predicateCache do
-            -- TODO transform v with getItemMeta if initial match fails
             if util.matchPredicate(predicateCache[predicateID], v) then
               predicateID = predicateID
+              break
+            end
+          end
+
+          -- Check detailed metadata
+          if predicateID == 0 then
+            local cachedMeta = chestPeriph.getItemMeta(k)
+            for predicateID = 1, #predicateCache do
+              if util.matchPredicate(predicateCache[predicateID], cachedMeta) then
+                predicateID = predicateID
+                break
+              end
             end
           end
         end
