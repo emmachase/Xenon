@@ -124,19 +124,6 @@ if not success then
 
     mon.setCursorPos(2, 3)
     mon.write("Xenon ran into an error!")
-local mon = successTools.monitor
-    local monW, monH = mon.getSize()
-
-    mon.setPaletteColor(2^0, 0x2F3542)
-    mon.setPaletteColor(2^1, 0x747D8C)
-
-    mon.setBackgroundColor(2^0)
-    mon.setTextColor(2^1)
-    mon.clear()
-
-    local str = "Xenon was terminated..."
-    mon.setCursorPos(math.ceil((monW - #str) / 2), math.ceil(monH / 2))
-    mon.write(str)
     mon.setBackgroundColor(2^0)
 
     mon.setCursorPos(2, 6)
