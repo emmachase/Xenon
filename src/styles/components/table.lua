@@ -1,13 +1,5 @@
 local tableComponent = {}
 
-local function toListName(name, damage)
-  return name .. "::" .. damage
-end
-
-local function fromListName(lName)
-  return lName:match("(.+)%:%:")
-end
-
 local function makeTextEl(content, parent)
   return {
     type = "text",
@@ -50,8 +42,8 @@ function tableComponent.new(node, renderer)
   end
 
   local tel = renderer.querySelector("th", node)
-  for i = 1, #tel do
-    tel[i].adapter = renderer.components.text.new(tel[i])
+  foreach(th, tel)
+    th.adapter = renderer.components.text.new(th)
   end
 
   return setmetatable(t, { __index = tableComponent })
@@ -68,9 +60,7 @@ function tableComponent:render(surf, position, styles, resolver)
   local rows = self.renderer.querySelector("tr", self.node)
 
   local flowY = position.top
-  for i = 1, #rows do
-    local row = rows[i]
-
+  foreach(row, rows) do
     local flowX = position.left
     local maxH = 0
 
@@ -80,7 +70,6 @@ function tableComponent:render(surf, position, styles, resolver)
 
     for j = 1, #row.children do
       local td = row.children[j]
-
       if td.styles.width then
         local w = resolver({width = position.width, flowW = remWidth}, "width", td.styles.width)
         remWidth = remWidth - w
@@ -92,7 +81,6 @@ function tableComponent:render(surf, position, styles, resolver)
 
     for j = 1, #row.children do
       local td = row.children[j]
-
       if row.styles["line-height"] and not td.styles["line-height"] then
         td.styles["line-height"] = row.styles["line-height"]
       end
@@ -143,15 +131,15 @@ function tableComponent:updateData(data)
     end
 
     table.sort(sortedList, function(str1, str2)
-      local cOrder1 = config.items[fromListName(str1)].order
-      local cOrder2 = config.items[fromListName(str2)].order
+      local cOrder1 = transformedItems[str1].order
+      local cOrder2 = transformedItems[str2].order
 
       if (cOrder1 or cOrder2) and (cOrder1 ~= cOrder2) then
         return (cOrder1 or math.huge) < (cOrder2 or math.huge)
       end
 
-      str1 = config.items[fromListName(str1)].disp
-      str2 = config.items[fromListName(str2)].disp
+      str1 = transformedItems[str1].disp
+      str2 = transformedItems[str2].disp
 
       local i = 0
       local c1, c2
@@ -165,15 +153,15 @@ function tableComponent:updateData(data)
     end)
 
     for sI = 1, #sortedList do
-      local k = fromListName(sortedList[sI])
+      local k = sortedList[sI]
       local v = tostring(data[sortedList[sI]])
 
       local skeleton = util.deepClone(self.rowTemplate)
       skeleton.parent = body
 
       local tel = self.renderer.querySelector("td", skeleton)
-      for i = 1, #tel do
-        tel[i].adapter = self.renderer.components.text.new(tel[i])
+      foreach(td, tel) do
+        td.adapter = self.renderer.components.text.new(td)
       end
 
       local stock = self.renderer.querySelector("#stock", skeleton)[1]
@@ -188,35 +176,35 @@ function tableComponent:updateData(data)
         addClass(stock, "stock")
 
         v = tonumber(v)
-        if v < (config.items[k].critical or config.criticalStock or 10) then
+        if v < (transformedItems[k].critical or config.criticalStock or 10) then
           addClass(stock, "critical")
-        elseif v < (config.items[k].low or config.lowStock or 50) then
+        elseif v < (transformedItems[k].low or config.lowStock or 50) then
           addClass(stock, "low")
         end
       end
 
       if name then
-        name.children = { makeTextEl(config.items[k].disp or k, name) }
+        name.children = { makeTextEl(transformedItems[k].disp or k, name) }
         addClass(name, "name")
       end
 
       if price then
-        price.children = { makeTextEl(config.items[k].price, price) }
+        price.children = { makeTextEl(transformedItems[k].price, price) }
         addClass(price, "price")
       end
 
       if pricePerStack then
-        pricePerStack.children = { makeTextEl(util.round(60 / config.items[k].price, 2), pricePerStack) }
+        pricePerStack.children = { makeTextEl(util.round(60 / transformedItems[k].price, 2), pricePerStack) }
         addClass(pricePerStack, "price-per-stack")
       end
 
       if addy then
-        addy.children = { makeTextEl(config.items[k].addy, addy) }
+        addy.children = { makeTextEl(transformedItems[k].addy, addy) }
         addClass(addy, "addy")
       end
 
       if addyFull then
-        addyFull.children = { makeTextEl(config.items[k].addy .. "@" .. config.name .. ".kst", addyFull) }
+        addyFull.children = { makeTextEl(transformedItems[k].addy .. "@" .. config.name .. ".kst", addyFull) }
         addClass(addyFull, "addy-full")
       end
 

@@ -29,6 +29,4 @@ local util = require("util.lua")
 logger.init(true, config.title)
 successTools.logger = logger
 
---#require "src/util.lua" as util
-
 --#require "vendor/json.lua" as json

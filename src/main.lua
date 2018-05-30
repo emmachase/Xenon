@@ -1,7 +1,9 @@
 -- vim: syntax=lua
 -- luacheck: globals loadRemote getRemote fs loadstring peripheral
 
-local versionTag = "v0.0.7"
+--#include "src/macros.lua"
+
+local versionTag = "v1.0.0"
 
 local args = {...}
 local layoutMode = args[1] == "--layout" or args[1] == "-l"
@@ -9,6 +11,8 @@ local layoutMode = args[1] == "--layout" or args[1] == "-l"
 local successTools = {}
 
 local function xenon()
+  --#require "src/util.lua" as util
+
   if not (turtle or layoutMode) then
     error("Xenon must run on a turtle")
   end
@@ -29,6 +33,8 @@ local function xenon()
 
   configHandle.close()
 
+  --#include "src/sections/transformations.lua"
+
   --#include "src/sections/requires.lua"
 
   --#include "src/sections/updates.lua"
@@ -37,12 +43,23 @@ local function xenon()
 
   if layoutMode then
     local exampleData = config.example or {
-      ["minecraft:gold_ingot::0"] = 412,
-      ["minecraft:iron_ingot::0"] = 4,
-      ["minecraft:diamond::0"] = 27
+      ["minecraft:gold_ingot::0::0"] = 412,
+      ["minecraft:iron_ingot::0::0"] = 4,
+      ["minecraft:diamond::0::0"] = 27
     }
 
-    local els = renderer.querySelector("table")
+    local rmList = {}
+    for item in pairs(exampleData) do
+      if not transformedItems[item] then
+        rmList[#rmList + 1] = item
+      end
+    end
+
+    foreach(item, rmList) do
+      exampleData[item] = nil
+    end
+
+    local els = renderer.querySelector("table.stock-table")
     for i = 1, #els do
       els[i].adapter:updateData(exampleData)
     end
@@ -107,7 +124,19 @@ if not success then
 
     mon.setCursorPos(2, 3)
     mon.write("Xenon ran into an error!")
+local mon = successTools.monitor
+    local monW, monH = mon.getSize()
 
+    mon.setPaletteColor(2^0, 0x2F3542)
+    mon.setPaletteColor(2^1, 0x747D8C)
+
+    mon.setBackgroundColor(2^0)
+    mon.setTextColor(2^1)
+    mon.clear()
+
+    local str = "Xenon was terminated..."
+    mon.setCursorPos(math.ceil((monW - #str) / 2), math.ceil(monH / 2))
+    mon.write(str)
     mon.setBackgroundColor(2^0)
 
     mon.setCursorPos(2, 6)

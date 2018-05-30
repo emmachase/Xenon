@@ -32,8 +32,7 @@ return function(toParse)
       if name then
         local rest = rule:match("%:%s*(.+)"):reverse():match("%s*(.+)"):reverse()
 
-        for i = 1, #applicators do
-          local applicator = applicators[i]
+        foreach(applicator, applicators) do
           ruleset[applicator][2][#ruleset[applicator][2] + 1] = {name, rest}
         end
       end

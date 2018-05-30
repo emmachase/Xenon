@@ -19,10 +19,10 @@ renderer.components = components
 local function deepMap(set, func, level)
   level = level or 1
 
-  for i = 1, #set.children do
-    func(set.children[i], level)
-    if set.children[i].children then
-      deepMap(set.children[i], func, level + 1)
+  foreach(child, set.children) do
+    func(child, level)
+    if child.children then
+      deepMap(child, func, level + 1)
     end
   end
 end
@@ -419,8 +419,7 @@ function renderer.processStyles(styles)
     local v = rulesets[rulesetI][2]
     local matches = querySelector(k)
 
-    for i = 1, #matches do
-      local matchedEl = matches[i]
+    foreach(matchedEl, matches) do
       matchedEl.styles = matchedEl.styles or {}
 
       for j = 1, #v do
@@ -441,9 +440,7 @@ function renderer.inflateXML(xml)
   end
 
   local body = model.children[1]
-  for i = 1, #body.children do
-    local el = body.children[i]
-
+  foreach(el, body.children) do
     if components[el.name] then
       el.adapter = components[el.name].new(el, renderer, resolveVal)
     else
@@ -469,9 +466,7 @@ function renderer.renderToSurface(surf, node, context)
     surf:clear(c)
   end
 
-  for i = 1, #node.children do
-    local el = node.children[i]
-
+  foreach(el, node.children) do
     if not el.styles then el.styles = {} end
     local s = el.styles
 
