@@ -12,15 +12,19 @@ jua.setInterval(function()
   redstoneTimer = redstoneTimer + intervalInc
   updateTimer = updateTimer + intervalInc
 
-  if config.redstoneSide and redstoneTimer >= (config.redstoneInterval or 5) then
+  if redstoneTimer >= (config.redstoneInterval or 5) then
     lightVal = not lightVal
 
     if type(config.redstoneSide) == "table" then
       foreach(side, config.redstoneSide) do
         rs.setOutput(side, lightVal)
       end
-    else
+    elseif type(config.redstoneSide) == "string" then
       rs.setOutput(config.redstoneSide, lightVal)
+    end
+    
+    foreach(integrator, rsIntegrators) do
+      integrator[1].setOutput(integrator[2], lightVal)
     end
 
     redstoneTimer = 0

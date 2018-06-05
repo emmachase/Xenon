@@ -72,5 +72,24 @@ else
   end
 end
 
-monPeriph.setTextScale(0.5)
+--== RS Integrators ==--
+
+local rsIntegrators = {}
+if config.redstoneIntegrator then
+  local toWrap = {}
+  if type(config.redstoneIntegrator[1]) == "table" then
+    foreach(integrator, config.redstoneIntegrator) do
+      toWrap[#toWrap + 1] = integrator
+    end
+  else
+    toWrap = {config.redstoneIntegrator}
+  end
+  
+  foreach(integrator, toWrap) do
+    local pHandle = peripheral.wrap(integrator[1])
+    rsIntegrators[#rsIntegrators + 1] = {pHandle, integrator[2]}
+  end
+end
+
+monPeriph.setTextScale(config.textScale or 0.5)
 successTools.monitor = monPeriph
