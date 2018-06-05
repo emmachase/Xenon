@@ -14,7 +14,14 @@ jua.setInterval(function()
 
   if config.redstoneSide and redstoneTimer >= (config.redstoneInterval or 5) then
     lightVal = not lightVal
-    rs.setOutput(config.redstoneSide, lightVal)
+
+    if type(config.redstoneSide) == "table" then
+      foreach(side, config.redstoneSide) do
+        rs.setOutput(side, lightVal)
+      end
+    else
+      rs.setOutput(config.redstoneSide, lightVal)
+    end
 
     redstoneTimer = 0
   end
