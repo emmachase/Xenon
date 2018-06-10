@@ -44,7 +44,7 @@ if not config.self then
       config.self = loc
       logger.warn("config.self not specified, assuming turtle connection '" .. config.self .. "'")
 
-      break
+      BREAK()
     end
   end
 

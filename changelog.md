@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `redstoneSide` config option can now be a table, if you wish to have multiple outputs for redstone heartbeat
 - It is now possible to use redstone integrators for rs heartbeat using `redstoneIntegrator` option, allows for multiple using same syntax as `redstoneSide`
 - Added `textScale` option to config, which allows monitor scale to be configurable
+- Added `layout` and `styles` options to config to specify where the files the layout/stylesheet are loaded from
+- It is now legal to use `return {}` in the config file to be more lua compliant (Xenon is backwards compatible with the old method)  
 
 ## 1.0.1
 ### Fixed

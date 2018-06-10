@@ -10,8 +10,8 @@ local defaultStyles =
 [[]]
 --#includeFile "src/styles/default.css"
 
-local userLayout = fs.open("layout.html", "r")
-local userStyles = fs.open("styles.css", "r")
+local userLayout = fs.open(config.layout or "layout.html", "r")
+local userStyles = fs.open(config.styles or "styles.css", "r")
 
 local layout, styles = defaultLayout, defaultStyles
 if userLayout then

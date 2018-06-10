@@ -24,7 +24,11 @@ local function xenon()
   end
 
   local config
-  local configFunc, err = loadstring("return " .. configHandle.readAll())
+  local configData = configHandle.readAll()
+  if not configData:match("^return") then
+    configData = "return " .. configData
+  end
+  local configFunc, err = loadstring(configData)
   if not configFunc then
     error("Invalid config: Line " .. (err:match(":(%d+:.+)") or err))
   else
