@@ -36,6 +36,36 @@ function util.wrappedWrite(surf, text, x, y, width, color, align, lineHeight)
         surf:drawString(lines[i], stX + width - #lines[i], stY + (i - 1)*lineHeight, nil, color)
       elseif align == "center" then
         surf:drawString(lines[i], stX + math.floor((width - #lines[i]) / 2), stY + (i - 1)*lineHeight, nil, color)
+      elseif align == "justify" and i ~= #lines then
+        local lineStr = lines[i]
+        local requiredExtra = width - #(lineStr:gsub("%s", ""))
+
+        local finalStr = ""
+        local _, wordCount = lineStr:gsub("%S+", "")
+
+        if wordCount == 1 then
+          finalStr = lineStr:gsub("%s", "")
+        else
+          local spacePerInstance = math.floor(requiredExtra / (wordCount - 1))
+          local overflowAmount = requiredExtra - (spacePerInstance * (wordCount - 1))
+
+          local wordI = 0
+          for word in lineStr:gmatch("%S+") do
+            wordI = wordI + 1
+
+            local padding = spacePerInstance
+            if wordI == wordCount then
+              padding = 0
+            elseif overflowAmount > 0 then
+              padding = padding + 1
+              overflowAmount = overflowAmount - 1
+            end
+
+            finalStr = finalStr .. word .. (" "):rep(padding)
+          end
+        end
+
+        surf:drawString(finalStr, stX, stY + (i - 1)*lineHeight, nil, color)
       else -- left
         surf:drawString(lines[i], stX, stY + (i - 1)*lineHeight, nil, color)
       end
