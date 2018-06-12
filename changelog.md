@@ -10,10 +10,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added `textScale` option to config, which allows monitor scale to be configurable
 - Added `layout` and `styles` options to config to specify where the files the layout/stylesheet are loaded from  
 - Added `justify` mode for text-align
+- Added support for non-advanced computers / monitors (note this is very rudimentary and it is **highly** recommended that your monitor is advanced)
 
 ### Changed
 - `redstoneSide` config option can now be a table, if you wish to have multiple outputs for redstone heartbeat
 - It is now legal to use `return {}` in the config file to be more lua compliant (Xenon is backwards compatible with the old method)
+- Creating a config at `.config` is now deprecated, they should now be named `config.lua` 
 
 ## 1.0.1
 ### Fixed

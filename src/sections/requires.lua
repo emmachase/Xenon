@@ -26,7 +26,7 @@ local util = require("util.lua")
 --#require "vendor/jua.lua" as jua
 
 --#require "src/logger.lua" as logger
-logger.init(true, config.title)
+logger.init(true, config.title, not term.isColor())
 successTools.logger = logger
 
 --#require "vendor/json.lua" as json

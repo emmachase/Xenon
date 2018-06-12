@@ -18,9 +18,13 @@ local function xenon()
   end
 
   -- Load local config
-  local configHandle = fs.open(".config", "r")
+  local configHandle = fs.open("config.lua", "r")
   if not configHandle then
-    error("No config file found at '.config', please create one")
+    configHandle = fs.open(".config", "r")
+
+    if not configHandle then
+      error("No config file found at '.config', please create one")
+    end
   end
 
   local config
@@ -100,27 +104,38 @@ end
 local success, error = pcall(xenon)
 
 if not success then
-  term.setBackgroundColor(colors.black)
-  term.setTextColor(colors.red)
+  local isColor = term.isColor()
+  local setBG = isColor and term.setBackgroundColor or function() end
+  local setFG = isColor and term.setTextColor or function() end
+
+  setBG(colors.black)
+  setFG(colors.red)
 
   print("[ERROR] Xenon terminated with error: '" .. error .. "'")
 
-  term.setTextColor(colors.blue)
+  setFG(colors.blue)
   print("This computer will reboot in 10 seconds..")
 
   if successTools.monitor then
     local mon = successTools.monitor
     local monW, monH = mon.getSize()
+    local isMonColor = mon.isColor()
 
-    mon.setPaletteColor(2^0, 0xFFA502)
-    mon.setPaletteColor(2^1, 0xFFFFFF)
-    mon.setPaletteColor(2^2, 0xFF4757)
+    if isMonColor then
+      mon.setPaletteColor(2^0, 0xFFA502)
+      mon.setPaletteColor(2^1, 0xFFFFFF)
+      mon.setPaletteColor(2^2, 0xFF4757)
 
-    mon.setBackgroundColor(2^0)
-    mon.setTextColor(2^1)
+      mon.setBackgroundColor(2^0)
+      mon.setTextColor(2^1)
+    end
+
     mon.clear()
 
-    mon.setBackgroundColor(2^2)
+    if isMonColor then
+      mon.setBackgroundColor(2^2)
+    end
+
     for i = 2, 4 do
       mon.setCursorPos(1, i)
       mon.write((" "):rep(monW))
@@ -128,7 +143,10 @@ if not success then
 
     mon.setCursorPos(2, 3)
     mon.write("Xenon ran into an error!")
-    mon.setBackgroundColor(2^0)
+
+    if isMonColor then
+      mon.setBackgroundColor(2^0)
+    end
 
     mon.setCursorPos(2, 6)
     mon.write("Error Details:")
@@ -151,12 +169,16 @@ else
   if successTools.monitor then
     local mon = successTools.monitor
     local monW, monH = mon.getSize()
+    local isMonColor = mon.isColor()
 
-    mon.setPaletteColor(2^0, 0x2F3542)
-    mon.setPaletteColor(2^1, 0x747D8C)
+    if isMonColor then
+      mon.setPaletteColor(2^0, 0x2F3542)
+      mon.setPaletteColor(2^1, 0x747D8C)
 
-    mon.setBackgroundColor(2^0)
-    mon.setTextColor(2^1)
+      mon.setBackgroundColor(2^0)
+      mon.setTextColor(2^1)
+    end
+
     mon.clear()
 
     local str = "Xenon was terminated..."
