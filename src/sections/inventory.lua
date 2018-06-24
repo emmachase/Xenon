@@ -19,6 +19,8 @@ local hasPredCache -- Keep track of which items have predicates
 local function countItems()
   local hasDrawnRefresh = false
   
+  local lastList = slotList
+
   list = {}
   hasPredCache = {}
   slotList = {}
@@ -90,12 +92,14 @@ local function countItems()
     end
   end
 
-  local els = renderer.querySelector("table.stock-table")
-  for i = 1, #els do
-    els[i].adapter:updateData(list)
-  end
+  if not util.equals(lastList, slotList) then
+    local els = renderer.querySelector("table.stock-table")
+    for i = 1, #els do
+      els[i].adapter:updateData(list)
+    end
 
-  repaintMonitor()
+    repaintMonitor()
+  end
 end
 
 local function dispense(mcname, count)
