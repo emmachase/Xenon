@@ -11,7 +11,7 @@ end
 function util.wrappedWrite(surf, text, x, y, width, color, align, lineHeight)
   lineHeight = lineHeight or 1
 
-  local lines = {"" }
+  local lines = {""}
 
   text = tostring(text)
 

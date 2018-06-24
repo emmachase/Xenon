@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+### [Unreleased]
+### Fixed
+- Fixed bug with using percentages and rem not displaying elements
+
 ## 1.1.0
 ### Added
 - It is now possible to use redstone integrators for rs heartbeat using `redstoneIntegrator` config option, allows for multiple using same syntax as `redstoneSide`

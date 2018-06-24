@@ -238,9 +238,9 @@ local function resolveVal(context, extra, valStr)
     if val[1] == "pixel" then
       return context.flowX + val[2]
     elseif val[1] == "percent" then
-      return context.width * (val[2] / 100) + context.flowX
+      return math.floor(context.width * (val[2] / 100) + context.flowX)
     elseif val[1] == "remain" then
-      return context.flowW * (val[2] / 100) + context.flowX
+      return math.floor(context.flowW * (val[2] / 100) + context.flowX)
     end
   elseif type == "right" then
     if valStr:match("^calc") then
@@ -277,9 +277,9 @@ local function resolveVal(context, extra, valStr)
     if val[1] == "pixel" then
       return context.flowY + val[2]
     elseif val[1] == "percent" then
-      return context.height * (val[2] / 100) + context.flowY
+      return math.floor(context.height * (val[2] / 100) + context.flowY)
     elseif val[1] == "remain" then
-      return context.flowY * (val[2] / 100) + context.flowY
+      return math.floor(context.flowY * (val[2] / 100) + context.flowY)
     end
   elseif type == "bottom" then
     if valStr:match("^calc") then

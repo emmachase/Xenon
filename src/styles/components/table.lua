@@ -42,7 +42,7 @@ function tableComponent.new(node, renderer)
   end
 
   local tel = renderer.querySelector("th", node)
-  foreach(th, tel)
+  foreach(th, tel) do
     th.adapter = renderer.components.text.new(th)
   end
 
