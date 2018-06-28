@@ -172,7 +172,7 @@ function basicTextComponent:resolveHeight(styles, context, resolver)
   end
 
   if styles["line-height"] then
-    cy = cy * resolver({}, "number", styles["line-height"])
+    cY = cY * resolver({}, "number", styles["line-height"])
   end
 
   return (topPad + bottomPad + cY) .. "px"
