@@ -1,14 +1,15 @@
 --== Chests ==--
 
 if config.chest then
-  config.chests = { config.chest }
+  config.chests = {config.chest}
 end
 
 -- Wrap the peripherals
 if not config.chests then
   local periphs = peripheral.getNames()
   local chest
-  foreach(periph, periphs) do
+  foreach(periph, periphs)
+  do
     if periph:match("chest") then
       chest = periph
     end
@@ -17,12 +18,13 @@ if not config.chests then
   if not chest then
     error("No configured chest(s), and none could be found")
   else
-    config.chests = { chest }
+    config.chests = {chest}
   end
 end
 
 local chestPeriphs = {}
-foreach(chest, config.chests) do
+foreach(chest, config.chests)
+do
   chestPeriphs[#chestPeriphs + 1] = peripheral.wrap(chest)
 
   if not chestPeriphs[#chestPeriphs] then
@@ -39,7 +41,8 @@ if not config.self then
   -- Attempt to find by chestPeriph reverse search
   local cp = chestPeriphs[1]
   local list = cp.getTransferLocations()
-  foreach(loc, list) do
+  foreach(loc, list)
+  do
     if loc:match("^turtle") then
       config.self = loc
       logger.warn("config.self not specified, assuming turtle connection '" .. config.self .. "'")
@@ -51,6 +54,12 @@ if not config.self then
   if not config.self then
     error("config.self not specified, and was unable to infer self, please add to config")
   end
+end
+
+-- Wrap the output chest
+local outChest = nil
+if config.outChest then
+  outChest = peripheral.wrap(config.outChest)
 end
 
 --== Monitors ==--
@@ -78,14 +87,16 @@ local rsIntegrators = {}
 if config.redstoneIntegrator then
   local toWrap = {}
   if type(config.redstoneIntegrator[1]) == "table" then
-    foreach(integrator, config.redstoneIntegrator) do
+    foreach(integrator, config.redstoneIntegrator)
+    do
       toWrap[#toWrap + 1] = integrator
     end
   else
     toWrap = {config.redstoneIntegrator}
   end
-  
-  foreach(integrator, toWrap) do
+
+  foreach(integrator, toWrap)
+  do
     local pHandle = peripheral.wrap(integrator[1])
     rsIntegrators[#rsIntegrators + 1] = {pHandle, integrator[2]}
   end

@@ -13,12 +13,12 @@ end
 
 local drawRefresh
 
-local list -- Item count list
-local slotList -- Keep track of which slots (in chests) items are located
-local hasPredCache -- Keep track of which items have predicates
+local list  -- Item count list
+local slotList  -- Keep track of which slots (in chests) items are located
+local hasPredCache  -- Keep track of which items have predicates
 local function countItems()
   local hasDrawnRefresh = false
-  
+
   local lastList = slotList
 
   list = {}
@@ -26,7 +26,8 @@ local function countItems()
   slotList = {}
 
   -- Perform some initial transformations on the data
-  foreach(item, config.items) do
+  foreach(item, config.items)
+  do
     local bName = util.toListName(item.modid, item.damage or 0, 0)
     if not hasPredCache[bName] then
       hasPredCache[bName] = item.predicateID ~= nil
@@ -38,7 +39,7 @@ local function countItems()
       slotList[lName] = {}
     end
   end
-  
+
   -- Iterate over all known chests
   for ck = 1, #chestPeriphs do
     local chestPeriph = chestPeriphs[ck]
@@ -48,7 +49,7 @@ local function countItems()
     else
       for k, v in pairs(cTable) do -- For each item..
         local bName = util.toListName(v.name, v.damage, 0) -- Simplified name to check if deep predicate matching is required
-        
+
         local predicateID = 0
         if hasPredCache[bName] then
           -- This item has known predicates, find which one
@@ -76,16 +77,15 @@ local function countItems()
           end
         end
 
-
         local lName = util.toListName(v.name, v.damage, predicateID)
 
         if transformedItems[lName] then
           if not list[lName] then
             list[lName] = v.count
-            slotList[lName] = { { k, v.count, ck } }
+            slotList[lName] = {{k, v.count, ck}}
           else
             list[lName] = list[lName] + v.count
-            slotList[lName][#slotList[lName] + 1] = { k, v.count, ck }
+            slotList[lName][#slotList[lName] + 1] = {k, v.count, ck}
           end
         end
       end
@@ -109,7 +109,12 @@ local function dispense(mcname, count)
 
     for i = #slotList[mcname], 1, -1 do
       local chestPeriph = chestPeriphs[slotList[mcname][i][3]]
-      local amountPushed = chestPeriph.pushItems(config.self, slotList[mcname][i][1], count)
+      local targetChest = (config.outChest or config.self)
+      if not (config.outChest and targetChest == config.outChest) then
+        local amountPushed = chestPeriph.pushItems(targetChest, slotList[mcname][i][1], count)
+      else
+        local amountPushed = 0
+      end
 
       count = count - amountPushed
 
@@ -117,7 +122,7 @@ local function dispense(mcname, count)
         break
       end
 
-      if not anyFree() then
+      if not anyFree() and not config.outChest then
         for j = 1, 16 do
           if turtle.getItemCount(j) > 0 then
             turtle.select(i)
@@ -128,10 +133,22 @@ local function dispense(mcname, count)
     end
   end
 
-  for i = 1, 16 do
-    if turtle.getItemCount(i) > 0 then
-      turtle.select(i)
-      turtle.drop()
+  if config.outChest then
+    local toBeDispensed = count
+    for k, v in pairs(outChest.list()) do
+      if toBeDispensed <= 0 then
+        break
+      end
+      if v.name == mcname then
+        toBeDispensed = toBeDispensed - outChest.drop(k, math.min(v.count, toBeDispensed), config.outChestDir or "up")
+      end
+    end
+  else
+    for i = 1, 16 do
+      if turtle.getItemCount(i) > 0 then
+        turtle.select(i)
+        turtle.drop()
+      end
     end
   end
 
