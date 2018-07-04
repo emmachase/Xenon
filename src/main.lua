@@ -13,10 +13,6 @@ local successTools = {}
 local function xenon()
   --#require "src/util.lua" as util
 
-  if not (turtle or layoutMode) then
-    error("Xenon must run on a turtle")
-  end
-
   -- Load local config
   local configHandle = fs.open("config.lua", "r")
   if not configHandle then
@@ -49,12 +45,18 @@ local function xenon()
 
   --#include "src/sections/renderer.lua"
 
+  if not (turtle or layoutMode or config.outChest) then
+    error("Xenon must run on a turtle!")
+  end
+
   if layoutMode then
-    local exampleData = config.example or {
-      ["minecraft:gold_ingot::0::0"] = 412,
-      ["minecraft:iron_ingot::0::0"] = 4,
-      ["minecraft:diamond::0::0"] = 27
-    }
+    local exampleData =
+      config.example or
+      {
+        ["minecraft:gold_ingot::0::0"] = 412,
+        ["minecraft:iron_ingot::0::0"] = 4,
+        ["minecraft:diamond::0::0"] = 27
+      }
 
     local rmList = {}
     for item in pairs(exampleData) do
@@ -63,7 +65,8 @@ local function xenon()
       end
     end
 
-    foreach(item, rmList) do
+    foreach(item, rmList)
+    do
       exampleData[item] = nil
     end
 
@@ -73,7 +76,7 @@ local function xenon()
     end
 
     for _, v in pairs(renderer.colorReference) do
-      term.setPaletteColor(2^v[1], tonumber(v[2], 16))
+      term.setPaletteColor(2 ^ v[1], tonumber(v[2], 16))
     end
 
     local testSurf = surface.create(term.getSize())
@@ -83,7 +86,8 @@ local function xenon()
 
     os.pullEvent("mouse_click")
   else
-    local repaintMonitor -- Forward declaration
+    --#include "src/sections/jua.lua"
+    local repaintMonitor  -- Forward declaration
 
     --#include "src/sections/peripherals.lua"
     --#include "src/sections/inventory.lua"
@@ -97,7 +101,6 @@ local function xenon()
     --#include "src/sections/krist.lua"
 
     drawStartup()
-    --#include "src/sections/jua.lua"
   end
 end
 
@@ -105,8 +108,10 @@ local success, error = pcall(xenon)
 
 if not success then
   local isColor = term.isColor()
-  local setBG = isColor and term.setBackgroundColor or function() end
-  local setFG = isColor and term.setTextColor or function() end
+  local setBG = isColor and term.setBackgroundColor or function()
+    end
+  local setFG = isColor and term.setTextColor or function()
+    end
 
   setBG(colors.black)
   setFG(colors.red)
@@ -122,18 +127,18 @@ if not success then
     local isMonColor = mon.isColor()
 
     if isMonColor then
-      mon.setPaletteColor(2^0, 0xFFA502)
-      mon.setPaletteColor(2^1, 0xFFFFFF)
-      mon.setPaletteColor(2^2, 0xFF4757)
+      mon.setPaletteColor(2 ^ 0, 0xFFA502)
+      mon.setPaletteColor(2 ^ 1, 0xFFFFFF)
+      mon.setPaletteColor(2 ^ 2, 0xFF4757)
 
-      mon.setBackgroundColor(2^0)
-      mon.setTextColor(2^1)
+      mon.setBackgroundColor(2 ^ 0)
+      mon.setTextColor(2 ^ 1)
     end
 
     mon.clear()
 
     if isMonColor then
-      mon.setBackgroundColor(2^2)
+      mon.setBackgroundColor(2 ^ 2)
     end
 
     for i = 2, 4 do
@@ -145,7 +150,7 @@ if not success then
     mon.write("Xenon ran into an error!")
 
     if isMonColor then
-      mon.setBackgroundColor(2^0)
+      mon.setBackgroundColor(2 ^ 0)
     end
 
     mon.setCursorPos(2, 6)
@@ -159,8 +164,10 @@ if not success then
   end
 
   if successTools.logger then
-    successTools.logger.error("Xenon (" .. ((config or {}).title or "Shop") .. "): Terminated with error: '" .. error .. "'",
-      ((config or {}).logger or {}).crash or false)
+    successTools.logger.error(
+      "Xenon (" .. ((config or {}).title or "Shop") .. "): Terminated with error: '" .. error .. "'",
+      ((config or {}).logger or {}).crash or false
+    )
   end
 
   sleep(10)
@@ -172,11 +179,11 @@ else
     local isMonColor = mon.isColor()
 
     if isMonColor then
-      mon.setPaletteColor(2^0, 0x2F3542)
-      mon.setPaletteColor(2^1, 0x747D8C)
+      mon.setPaletteColor(2 ^ 0, 0x2F3542)
+      mon.setPaletteColor(2 ^ 1, 0x747D8C)
 
-      mon.setBackgroundColor(2^0)
-      mon.setTextColor(2^1)
+      mon.setBackgroundColor(2 ^ 0)
+      mon.setTextColor(2 ^ 1)
     end
 
     mon.clear()
