@@ -109,7 +109,10 @@ local function dispense(mcname, count)
 
     for i = #slotList[mcname], 1, -1 do
       local chestPeriph = chestPeriphs[slotList[mcname][i][3]]
-      local amountPushed = chestPeriph.pushItems(config.self, slotList[mcname][i][1], count)
+      local amountPushed = 0
+      if not (config.outChest and targetChest == config.outChest) then
+        amountPushed = chestPeriph.pushItems(config.self, slotList[mcname][i][1], count)
+      end
 
       count = count - amountPushed
 
@@ -117,7 +120,7 @@ local function dispense(mcname, count)
         break
       end
 
-      if not anyFree() then
+      if not anyFree() and not config.outChest then
         for j = 1, 16 do
           if turtle.getItemCount(j) > 0 then
             turtle.select(i)
@@ -128,10 +131,22 @@ local function dispense(mcname, count)
     end
   end
 
-  for i = 1, 16 do
-    if turtle.getItemCount(i) > 0 then
-      turtle.select(i)
-      turtle.drop()
+  if config.outChest then
+    local toBeDispensed = count
+    for k, v in pairs(outChest.list()) do
+      if toBeDispensed <= 0 then
+        break
+      end
+      if v.name == mcname then
+        toBeDispensed = toBeDispensed - outChest.drop(k, math.min(v.count, toBeDispensed), config.outChestDir or "up")
+      end
+    end
+  else
+    for i = 1, 16 do
+      if turtle.getItemCount(i) > 0 then
+        turtle.select(i)
+        turtle.drop()
+      end
     end
   end
 

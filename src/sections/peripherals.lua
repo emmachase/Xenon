@@ -35,7 +35,7 @@ if #chestPeriphs == 0 then
   error("No valid chest(s) could be found")
 end
 
-if not config.self then
+if not config.self and not config.outChest then
   -- Attempt to find by chestPeriph reverse search
   local cp = chestPeriphs[1]
   local list = cp.getTransferLocations()
@@ -51,6 +51,12 @@ if not config.self then
   if not config.self then
     error("config.self not specified, and was unable to infer self, please add to config")
   end
+end
+
+-- Wrap the output chest
+local outChest = nil
+if config.outChest then
+  outChest = peripheral.wrap(config.outChest)
 end
 
 --== Monitors ==--

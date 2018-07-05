@@ -21,6 +21,10 @@ return {
   -- NOTE: It is not recommended to use kwallet, the best practice is to convert your pkey (using
   -- kwallet format) to raw pkey yourself first, and then use that here. Thus improving security.
 
+  -- If you want to run Xenon on a computer instead of a turtle, and spit the items out of a chest, specify the name of the chest below.
+  -- outChest = "chest_1",
+  outChestDir = "up", -- The direction, relative to outChest, that items should be spit out.
+  
   self    = "east",  -- * The network name of the turtle running Xenon (e.g. 'turtle_64')
   -- NOTE: If the chest and turtle are connected by adjacency and not by a wired modem/cabling
   -- then 'self' MUST be defined as the position of the turtle relative to the chest, for example:
