@@ -13,10 +13,6 @@ local successTools = {}
 local function xenon()
   --#require "src/util.lua" as util
 
-  if not (turtle or layoutMode) then
-    error("Xenon must run on a turtle")
-  end
-
   -- Load local config
   local configHandle = fs.open("config.lua", "r")
   if not configHandle then
@@ -40,6 +36,10 @@ local function xenon()
   end
 
   configHandle.close()
+  
+  if not (turtle or layoutMode or config.outChest) then
+    error("Xenon must run on a turtle")
+  end
 
   --#include "src/sections/transformations.lua"
 
