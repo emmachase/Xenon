@@ -109,10 +109,9 @@ local function dispense(mcname, count)
 
     for i = #slotList[mcname], 1, -1 do
       local chestPeriph = chestPeriphs[slotList[mcname][i][3]]
+      local amountPushed = 0
       if not (config.outChest and targetChest == config.outChest) then
-        local amountPushed = chestPeriph.pushItems(config.self, slotList[mcname][i][1], count)
-      else
-        local amountPushed = 0
+        amountPushed = chestPeriph.pushItems(config.self, slotList[mcname][i][1], count)
       end
 
       count = count - amountPushed
