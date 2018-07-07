@@ -68,6 +68,16 @@ function tableComponent:render(surf, position, styles, resolver)
     local remWidth = position.width
     local widths = {}
 
+    local topRowMargin,
+          rightRowMargin,
+          bottomRowMargin,
+          leftRowMargin = util.parseOrdinalStyle(resolver, row.styles, "margin")
+
+    flowX = flowX + leftRowMargin
+    remWidth = remWidth - rightRowMargin
+
+    flowY = flowY + topRowMargin
+
     for j = 1, #row.children do
       local td = row.children[j]
       if td.styles.width then
@@ -94,6 +104,14 @@ function tableComponent:render(surf, position, styles, resolver)
         width = math.floor(remWidth * ((tonumber(td.styles.flex) or 1) / flexTot))
       end
 
+      local topMargin,
+            rightMargin,
+            bottomMargin,
+            leftMargin = util.parseOrdinalStyle(resolver, td.styles, "margin")
+
+      flowX = flowX + leftMargin
+      flowY = flowY + topMargin
+
       td.adapter:render(surf, {
         left = flowX,
         top = flowY,
@@ -101,9 +119,9 @@ function tableComponent:render(surf, position, styles, resolver)
         height = height
       }, td.styles, resolver)
 
-      maxH = math.max(maxH, height)
+      maxH = math.max(maxH, height + bottomMargin)
 
-      flowX = flowX + width
+      flowX = flowX + width + rightMargin
     end
 
     if row.styles["background-color"] then
@@ -113,7 +131,7 @@ function tableComponent:render(surf, position, styles, resolver)
       end
     end
 
-    flowY = flowY + maxH
+    flowY = flowY + maxH + bottomRowMargin
   end
 end
 

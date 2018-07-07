@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### [Unreleased]
 ### Added
 - Ability to drop items via `config.outChest` rather than a turtle dropping them (This means Xenon can run on computers now instead of turtles if this option is used)
+- Added support for textalign with large fonts
+- text-transform for uppercase, lowercase, and capitalize
+- margin support in styles
+- New example titled `red`
 
 ### 1.1.1
 ### Changed

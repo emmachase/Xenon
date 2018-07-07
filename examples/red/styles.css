@@ -1,0 +1,138 @@
+colors {
+    --white:      #c8d6e5;
+    --lightGray:  #8395a7;
+    --darkGray:   #3e3e4f;
+    --darkerGray: #373542;
+    --black:      #221111;
+
+    --darkRed:    #8e3333;
+    --red:        #c0392b;
+    --redWhite:   #bb7777;
+    --yellow:     #dede6c;
+}
+
+* {
+    display: block;
+}
+
+body {
+    background-color: black;
+}
+
+header {
+    position: relative;
+
+    /* content: "My Shop"; */
+    /* background: url(myLogo.nfp); */
+    /* background-position: center; */
+    /* Content and Background (Images) are mutually exclusive, with content taking precedence if both are present */
+
+    background-color: red;
+
+    width: 100%;
+    padding: 1px;
+
+    color: white;
+    text-align: center;
+    text-transform: uppercase;
+
+    font-size: 2em; /* Either 1em or 2em, no other sizes are currently supported */
+}
+
+aside {
+    position: relative;
+    right: 0;
+
+    /* Since `top` (and bottom) are omitted here, it will be positioned relative to the last positioned element,
+        which is exactly where we want it to be.. */
+
+    width: 100%;
+    height: 100rem; /* In Xenon CSS, rem doesn't stand for Root Em, it stands for Remaining space, so this is 100% of the remaining space */
+
+    text-align: left;
+    padding: 1px;
+    
+    background-color: transparent;
+    color: redWhite;
+}
+
+table {
+    position: relative;
+
+    background-color: black;
+
+    width: calc(100% - 2px);
+    height: calc(100rem - 4px); /* See note under aside height */
+
+    top: 1px;
+    left: 1px;
+}
+
+td {
+    color: white;
+    padding: 0 1px 0 0;
+}
+
+.stock, .price {
+    text-align: right;
+}
+
+.stock {
+    color: lightGray;
+    width: 7px;
+}
+
+.stock.low {
+    color: yellow;
+}
+
+.stock.critical {
+    color: red;
+}
+
+.name {
+    flex: 1; /* tr elements implicitly have flex-box like behavior, it is the only element that (currently) supports this feature */
+}
+
+.price-container, .price {
+    text-align: right;
+    width: 10px;
+}
+
+.addy-full, .addy {
+    color: lightGray;
+    width: 15px;
+} 
+
+thead tr {
+    margin-bottom: 1px;
+    background-color: darkRed;
+}
+
+tbody tr {
+    line-height: 3px;
+    background-color: darkGray; 
+}
+
+tr:nth-child(2n) {
+    background-color: darkerGray;
+}
+
+th {
+    color: white;
+    padding: 1px 1px 1px 0;
+}
+
+details {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+
+    background-color: transparent;
+    color: white;
+
+    text-align: right;
+
+    width: 100%;
+    height: 1px;
+}

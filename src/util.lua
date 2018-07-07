@@ -75,6 +75,25 @@ function util.wrappedWrite(surf, text, x, y, width, color, align, lineHeight)
   return y + math.ceil((lineHeight - 1) / 2) + 1
 end
 
+function util.parseOrdinalStyle(resolver, styles, styleName)
+  local ordinals = {}
+  for ordinal in (styles[styleName] or "0"):gmatch("%S+") do
+    ordinals[#ordinals + 1] = ordinal
+  end
+
+  if styles[styleName .. "-top"]    then ordinals[1] = styles[styleName .. "-top"] end
+  if styles[styleName .. "-right"]  then ordinals[2] = styles[styleName .. "-right"] end
+  if styles[styleName .. "-bottom"] then ordinals[3] = styles[styleName .. "-bottom"] end
+  if styles[styleName .. "-left"]   then ordinals[4] = styles[styleName .. "-left"] end
+
+  local top = resolver({}, "number", ordinals[1])
+  local right = resolver({}, "number", ordinals[2] or ordinals[1])
+  local bottom = resolver({}, "number", ordinals[3] or ordinals[1])
+  local left = resolver({}, "number", ordinals[4] or ordinals[2] or ordinals[1])
+
+  return top, right, bottom, left
+end
+
 function util.deepClone(table, cache)
   cache = cache or {}
   local t = {}

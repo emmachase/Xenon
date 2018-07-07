@@ -11,15 +11,35 @@ local function calcWidth(text)
   return w
 end
 
-local function writeBig(surf, text, x, y, col, bg, align, width)
-  local tempSurf = surface.create(math.ceil(calcWidth(text) / 2) * 2, math.ceil(font.height / 3) * 3, bg)
-
-  tempSurf:drawText(text, font, 0, 0, col, bg, bg)
-  surf:drawSurfaceSmall(tempSurf, x, y)
-end
-
 local function calcSizeBig(text)
   return math.ceil(calcWidth(text) / 2) * 2, math.ceil(font.height / 3) * 3
+end
+
+local function writeBig(surf, text, x, y, col, bg, align, width)
+  local sw, sh = calcSizeBig(text)
+  local tempSurf = surface.create(sw, sh, bg)
+
+  tempSurf:drawText(text, font, 0, 0, col, bg, bg)
+  if align == "left" then
+    surf:drawSurfaceSmall(tempSurf, x, y)
+  elseif align == "center" then
+    surf:drawSurfaceSmall(tempSurf, math.floor(x + (width - sw / 2) / 2), y)
+  else
+    surf:drawSurfaceSmall(tempSurf, width + x - sw / 2, y)
+  end
+end
+
+local function transformText(text, styles)
+  local style = styles["text-transform"]
+  if style == "uppercase" then
+    return text:upper()
+  elseif style == "lowercase" then
+    return text:lower()
+  elseif style == "capitalize" then
+    return text:gsub("%f[%a]%w", function(c) return c:upper() end)
+  end
+
+  return text
 end
 
 function basicTextComponent.new(node)
@@ -35,15 +55,10 @@ function basicTextComponent:render(surf, position, styles, resolver)
     end
   end
 
-  local pads = {}
-  for pad in (styles.padding or "0"):gmatch("%S+") do
-    pads[#pads + 1] = pad
-  end
-
-  local topPad = resolver({}, "number", pads[1])
-  local rightPad = resolver({}, "number", pads[2] or pads[1])
-  --  local bottomPad = resolver({}, "number", pads[3] or pads[1])
-  local leftPad = resolver({}, "number", pads[4] or pads[2] or pads[1])
+  local topPad,
+        rightPad,
+        _, -- bottomPad is unused
+        leftPad = util.parseOrdinalStyle(resolver, styles, "padding")
 
   local lineHeight = 1
   if styles["line-height"] then
@@ -79,17 +94,20 @@ function basicTextComponent:render(surf, position, styles, resolver)
       surf:drawSurfaceSmall(img, position.left + math.floor((position.width - rightPad - img.width / 2) / 2), cY)
     end
   elseif styles.content then
+    local text = resolver({}, "string", styles.content)
+    text = transformText(text, styles)
+
     if styles["font-size"] == "2em" then
       if bgc <= 0 then
         error("'font-size: 2em' requires 'background-color' to be present")
       end
 
-      writeBig(surf, resolver({}, "string", styles.content),
+      writeBig(surf, text,
         position.left + leftPad, cY,
         resolver({}, "color", styles.color), bgc,
         styles["text-align"] or "left", position.width - leftPad - rightPad)
     else
-      util.wrappedWrite(surf, resolver({}, "string", styles.content),
+      util.wrappedWrite(surf, text,
         position.left + leftPad, cY, position.width - leftPad - rightPad,
         resolver({}, "color", styles.color), styles["text-align"] or "left", lineHeight)
     end
@@ -101,6 +119,7 @@ function basicTextComponent:render(surf, position, styles, resolver)
 
       -- TODO Wrapping support?
       local text = self.node.children[1].content or ""
+      text = transformText(text, styles)
       writeBig(surf, text,
         position.left + leftPad, cY,
         resolver({}, "color", styles.color), bgc,
@@ -108,11 +127,13 @@ function basicTextComponent:render(surf, position, styles, resolver)
     else
       local children = self.node.children
       local acc = ""
-      
+
       foreach(child, children) do
         if child.type == "text" then
           acc = acc .. child.content
         elseif child.name == "br" then
+          acc = transformText(acc, styles)
+
           cY = util.wrappedWrite(surf, acc,
             position.left + leftPad, cY, position.width - leftPad - rightPad,
             resolver({}, "color", styles.color), styles["text-align"] or "left", lineHeight)
@@ -122,6 +143,8 @@ function basicTextComponent:render(surf, position, styles, resolver)
         end
       end
       if #acc > 0 then
+        acc = transformText(acc, styles)
+
         util.wrappedWrite(surf, acc,
           position.left + leftPad, cY, position.width - leftPad - rightPad,
           resolver({}, "color", styles.color), styles["text-align"] or "left", lineHeight)
@@ -131,15 +154,10 @@ function basicTextComponent:render(surf, position, styles, resolver)
 end
 
 function basicTextComponent:resolveHeight(styles, context, resolver)
-  local pads = {}
-  for pad in (styles.padding or "0"):gmatch("%S+") do
-    pads[#pads + 1] = pad
-  end
-
-  local topPad = resolver({}, "number", pads[1])
-  local rightPad = resolver({}, "number", pads[2] or pads[1])
-  local bottomPad = resolver({}, "number", pads[3] or pads[1])
-  local leftPad = resolver({}, "number", pads[4] or pads[2] or pads[1])
+  local topPad,
+        rightPad,
+        bottomPad,
+        leftPad = util.parseOrdinalStyle(resolver, styles, "padding")
 
   local cY = 0
 

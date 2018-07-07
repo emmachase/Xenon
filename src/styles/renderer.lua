@@ -516,6 +516,14 @@ function renderer.renderToSurface(surf, node, context)
         top = resolveVal(context, "top", s.top or "0")
       end
 
+      local topMargin,
+            _, -- rightMargin currently unused as there is no way (currently) to have inline elements
+            bottomMargin,
+            leftMargin = util.parseOrdinalStyle(resolveVal, s, "margin")
+
+      left = left + leftMargin
+      top = top + topMargin
+
       if el.adapter then
         el.adapter:render(surf, {
           left = left,
@@ -524,8 +532,8 @@ function renderer.renderToSurface(surf, node, context)
           height = height
         }, s, resolveVal)
 
-        context.flowY = context.flowY + height
-        context.flowH = context.flowH - height
+        context.flowY = context.flowY + height + bottomMargin
+        context.flowH = context.flowH - height - bottomMargin
       end
 
       if s.position == "absolute" then
