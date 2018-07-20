@@ -85,7 +85,7 @@ function logger.externInfo(text)
   end
 
   if discordURL then
-    http.post(discordURL, http.post(discordURL, textutils.serializeJSON({username = externName, content = text})))
+    http.post(discordURL, textutils.serializeJSON({username = externName, content = text}))
   end
 end
 
