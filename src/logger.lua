@@ -85,24 +85,24 @@ function logger.externInfo(text)
   end
 
   if discordURL then
-    http.post(discordURL, [[payload={"username": "]] .. externName .. [[", "content":"]] .. textutils.urlEncode(text) .. [["}]])
+    http.post(discordURL, http.post(discordURL, textutils.serializeJSON({username = externName, content = text})))
   end
 end
 
 function logger.externMention(text)
   if slackURL then
     if slackName then
-      http.post(slackURL, [[payload={"username": "]] .. externName .. [[", "text":"<@]] .. slackName .. [[> ]] .. textutils.urlEncode(text) .. [["}]])
+      http.post(slackURL, textutils.serializeJSON({username = externName, content = "<@" .. slackName .. "> " .. text}))
     else
-      http.post(slackURL, [[payload={"username": "]] .. externName .. [[", "text":"]] .. textutils.urlEncode(text) .. [["}]])
+      http.post(slackURL, textutils.serializeJSON({username = externName, content = "<@" .. slackName .. "> " .. text}))
     end
   end
 
   if discordURL then
     if discordName then
-      http.post(discordURL, [[{"username": "]] .. externName .. [[", "content":"<@]] .. discordName .. [[> ]] .. textutils.urlEncode(text) .. [["}]])
+      http.post(discordURL, textutils.serializeJSON({username = externName, content = "<@" .. discordName .. "> " .. text}))
     else
-      http.post(discordURL, [[{"username": "]] .. externName .. [[", "content":"]] .. textutils.urlEncode(text) .. [["}]])
+      http.post(discordURL, textutils.serializeJSON({username = externName, content = text}))
     end
   end
 end
