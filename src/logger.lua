@@ -81,28 +81,28 @@ end
 
 function logger.externInfo(text)
   if slackURL then
-    http.post(slackURL, [[payload={"username": "]] .. externName .. [[", "text":"]] .. textutils.urlEncode(text) .. [["}]])
+    http.post(slackURL,  textutils.serializeJSON({username = externName, text = text}), {["User-Agent"] = "Mozilla/5.0 (X11; U; Linux i686; pl; rv:1.8.0.1) Gecko/20060124 Firefox/1.5.0.1"})
   end
 
   if discordURL then
-    http.post(discordURL, textutils.serializeJSON({username = externName, content = text}))
+    http.post(discordURL, textutils.serializeJSON({username = externName, content = text}), {["User-Agent"] = "Mozilla/5.0 (X11; U; Linux i686; pl; rv:1.8.0.1) Gecko/20060124 Firefox/1.5.0.1"})
   end
 end
 
 function logger.externMention(text)
   if slackURL then
     if slackName then
-      http.post(slackURL, textutils.serializeJSON({username = externName, content = "<@" .. slackName .. "> " .. text}))
+      http.post(slackURL, textutils.serializeJSON({username = externName, content = "<@" .. slackName .. "> " .. text}), {["User-Agent"] = "Mozilla/5.0 (X11; U; Linux i686; pl; rv:1.8.0.1) Gecko/20060124 Firefox/1.5.0.1"})
     else
-      http.post(slackURL, textutils.serializeJSON({username = externName, content = "<@" .. slackName .. "> " .. text}))
+      http.post(slackURL, textutils.serializeJSON({username = externName, content = "<@" .. slackName .. "> " .. text}), {["User-Agent"] = "Mozilla/5.0 (X11; U; Linux i686; pl; rv:1.8.0.1) Gecko/20060124 Firefox/1.5.0.1"})
     end
   end
 
   if discordURL then
     if discordName then
-      http.post(discordURL, textutils.serializeJSON({username = externName, content = "<@" .. discordName .. "> " .. text}))
+      http.post(discordURL, textutils.serializeJSON({username = externName, content = "<@" .. discordName .. "> " .. text}), {["User-Agent"] = "Mozilla/5.0 (X11; U; Linux i686; pl; rv:1.8.0.1) Gecko/20060124 Firefox/1.5.0.1"})
     else
-      http.post(discordURL, textutils.serializeJSON({username = externName, content = text}))
+      http.post(discordURL, textutils.serializeJSON({username = externName, content = text}), {["User-Agent"] = "Mozilla/5.0 (X11; U; Linux i686; pl; rv:1.8.0.1) Gecko/20060124 Firefox/1.5.0.1"})
     end
   end
 end
