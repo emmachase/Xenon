@@ -81,28 +81,28 @@ end
 
 function logger.externInfo(text)
   if slackURL then
-    http.post(slackURL, [[payload={"username": "]] .. externName .. [[", "text":"]] .. textutils.urlEncode(text) .. [["}]])
+    http.post(slackURL,  textutils.serializeJSON({username = externName, text = text}), {["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0"})
   end
 
   if discordURL then
-    http.post(discordURL, [[payload={"username": "]] .. externName .. [[", "content":"]] .. textutils.urlEncode(text) .. [["}]])
+    http.post(discordURL, textutils.serializeJSON({username = externName, content = text}), {["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0"})
   end
 end
 
 function logger.externMention(text)
   if slackURL then
     if slackName then
-      http.post(slackURL, [[payload={"username": "]] .. externName .. [[", "text":"<@]] .. slackName .. [[> ]] .. textutils.urlEncode(text) .. [["}]])
+      http.post(slackURL, textutils.serializeJSON({username = externName, text = "<@" .. slackName .. "> " .. text}), {["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0"})
     else
-      http.post(slackURL, [[payload={"username": "]] .. externName .. [[", "text":"]] .. textutils.urlEncode(text) .. [["}]])
+      http.post(slackURL, textutils.serializeJSON({username = externName, text = "<@" .. slackName .. "> " .. text}), {["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0"})
     end
   end
 
   if discordURL then
     if discordName then
-      http.post(discordURL, [[{"username": "]] .. externName .. [[", "content":"<@]] .. discordName .. [[> ]] .. textutils.urlEncode(text) .. [["}]])
+      http.post(discordURL, textutils.serializeJSON({username = externName, content = "<@" .. discordName .. "> " .. text}), {["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0"})
     else
-      http.post(discordURL, [[{"username": "]] .. externName .. [[", "content":"]] .. textutils.urlEncode(text) .. [["}]])
+      http.post(discordURL, textutils.serializeJSON({username = externName, content = text}), {["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0"})
     end
   end
 end
