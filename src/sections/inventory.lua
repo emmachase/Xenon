@@ -123,7 +123,7 @@ local function dispense(mcname, count)
       if not anyFree() and not config.outChest then
         for j = 1, 16 do
           if turtle.getItemCount(j) > 0 then
-            turtle.select(i)
+            turtle.select(j)
             turtle.drop()
           end
         end
