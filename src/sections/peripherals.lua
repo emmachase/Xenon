@@ -9,7 +9,7 @@ if not config.chests then
   local periphs = peripheral.getNames()
   local chest
   foreach(periph, periphs) do
-    if periph:match("chest") then
+    if periph:match("chest") or periph:match("shulker_box") then
       chest = periph
     end
   end
