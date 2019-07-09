@@ -1,0 +1,16 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: incin/xenon-build:0.0.2
+
+    steps:
+      - checkout
+
+      - run:
+          name: Build
+          command: luajit build.lua
+
+      - run:
+          name: Upload to CDN
+          command: curl -F "password=${SD_PASSWORD}" -F 'file=@xenon.lua' -F "name=xenon-${CIRCLE_SHA1}" https://i.would.download/upload
