@@ -13,4 +13,4 @@ jobs:
 
       - run:
           name: Upload to CDN
-          command: curl -F "password=${SD_PASSWORD}" -F 'file=@xenon.lua' -F "name=xenon-${CIRCLE_SHA1}" https://i.would.download/upload
+          command: curl -F "password=${SD_PASSWORD}" -F 'file=@xenon.lua' -F "name=xenon-${CIRCLE_SHA1}" -o /dev/null https://i.would.download/upload
