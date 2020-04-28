@@ -4,9 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-### Unreleased
+### 2.0.0
+### Added
+- Xenon will now verify krist config consistency (pkey resolves to address and address owns name)
+
 ### Changed
 - Xenon will now try to find any and all chests on the network if an explicit chests array is not given
+- Moved updating/version checking to proxy domain
 
 ### 1.2.1
 ### Fixed
