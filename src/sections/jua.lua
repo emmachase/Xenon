@@ -67,14 +67,6 @@ jua.go(function()
   logger.info("Startup!", false, true)
 
   local success
-  if not config.pkey then
-    logger.warn("No private-key (config.pkey), refunds will not work..")
-  end
-
-  if config.pkeyFormat == "kwallet" then
-    config.pkey = kapi.toKristWalletFormat(config.pkey)
-  end
-
   success, ws = await(kapi.connect, config.pkey or "no-pkey")
 
   if success then
