@@ -94,9 +94,9 @@ local function xenon()
     -- Initialize Item List
     countItems()
 
-    --#include "src/sections/krist.lua"
-
     drawStartup()
+
+    --#include "src/sections/krist.lua"
     --#include "src/sections/jua.lua"
   end
 end

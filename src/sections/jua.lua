@@ -1,7 +1,5 @@
 --== Misc Jua Hooks ==--
 
-local ws -- Krist Websocket forward declaration
-
 local await = jua.await
 
 local lightVal = false
@@ -36,13 +34,6 @@ jua.setInterval(function()
     updateTimer = 0
   end
 end, intervalInc)
-
-jua.on("terminate", function()
-  if ws then ws.close() end
-  jua.stop()
-  logger.error("Terminated")
-  logger.close()
-end)
 
 --== Handlers ==--
 local function handleTransaction(data)

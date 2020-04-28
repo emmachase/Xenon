@@ -25,7 +25,11 @@ local function findID(url)
 end
 
 local function newID()
-    return #callbackRegistry + 1
+    for i = 1, math.huge do
+        if not callbackRegistry[i] then
+            return i
+        end
+    end
 end
 
 local function trimID(url)
@@ -37,8 +41,8 @@ end
 function request(callback, url, headers, postData)
     local id = newID()
     local newUrl = url .. "#R" .. id
-    http.request(newUrl, postData, headers)
     callbackRegistry[id] = callback
+    http.request(newUrl, postData, headers)
 end
 
 function init(jua)
@@ -51,7 +55,7 @@ function init(jua)
             else
                 callbackRegistry[id](true, trimID(url), handle)
             end
-            table.remove(callbackRegistry, id)
+            callbackRegistry[id] = nil
         end
     end)
 
@@ -63,7 +67,7 @@ function init(jua)
             else
                 callbackRegistry[id](false, trimID(url), handle)
             end
-            table.remove(callbackRegistry, id)
+            callbackRegistry[id] = nil
         end
     end)
 end
