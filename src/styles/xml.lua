@@ -5,6 +5,10 @@ local INVERSE_ESCAPE_MAP = {
   ["\\t"] = "\t", ["\\v"] = "\v", ["\\\\"] = "\\",
 }
 
+local specialEscapes = {
+  nbsp = " ", amp = "&", krist = "\164"
+}
+
 local function consumeWhitespace(wBuffer)
   local nPos = wBuffer:find("%S")
   return wBuffer:sub(nPos or #wBuffer + 1)
@@ -37,7 +41,25 @@ function xmlutils.parse(buffer)
       end
 
       local cnt = buffer:sub(1, nxtLoc - 1)
-      cnt = cnt:gsub("%&nbsp%;", " ")
+
+      local replaceSearch = 1
+      while true do
+        local esBegin, esEnd, code = cnt:find("%&([%w#]%w-)%;", replaceSearch)
+        if not esBegin then break end
+
+        local replacement = specialEscapes[code]
+        if not replacement then
+          if code:match("^#%d+$") then
+            replacement = string.char(tonumber(code:sub(2)))
+          else
+            error("Unknown replacement '" .. code .. "' in xml")
+          end
+        end
+
+        cnt = cnt:sub(1, esBegin - 1) .. replacement .. cnt:sub(esEnd + 1)
+        replaceSearch = esBegin + 1
+      end
+
       parsePoint.children[#parsePoint.children + 1] = {type = "text", content = cnt, parent = parsePoint}
       buffer = buffer:sub(nxtLoc)
     elseif nxtLoc == 1 and capt == "</" then
