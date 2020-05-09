@@ -8,6 +8,8 @@ local slackName = config.slackName
 local discordName = config.discordName
 local externName
 
+local webhookHeaders = {["Content-Type"] = "application/json", ["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0"}
+
 local function time()
   return os.epoch("utc")
 end
@@ -81,28 +83,28 @@ end
 
 function logger.externInfo(text)
   if slackURL then
-    http.post(slackURL,  textutils.serializeJSON({username = externName, text = text}), {["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0"})
+    http.post(slackURL,  textutils.serializeJSON({username = externName, text = text}), webhookHeaders)
   end
 
   if discordURL then
-    http.post(discordURL, textutils.serializeJSON({username = externName, content = text}), {["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0"})
+    http.post(discordURL, textutils.serializeJSON({username = externName, content = text}), webhookHeaders)
   end
 end
 
 function logger.externMention(text)
   if slackURL then
     if slackName then
-      http.post(slackURL, textutils.serializeJSON({username = externName, text = "<@" .. slackName .. "> " .. text}), {["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0"})
+      http.post(slackURL, textutils.serializeJSON({username = externName, text = "<@" .. slackName .. "> " .. text}), webhookHeaders)
     else
-      http.post(slackURL, textutils.serializeJSON({username = externName, text = "<@" .. slackName .. "> " .. text}), {["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0"})
+      http.post(slackURL, textutils.serializeJSON({username = externName, text = "<@" .. slackName .. "> " .. text}), webhookHeaders)
     end
   end
 
   if discordURL then
     if discordName then
-      http.post(discordURL, textutils.serializeJSON({username = externName, content = "<@" .. discordName .. "> " .. text}), {["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0"})
+      http.post(discordURL, textutils.serializeJSON({username = externName, content = "<@" .. discordName .. "> " .. text}), webhookHeaders)
     else
-      http.post(discordURL, textutils.serializeJSON({username = externName, content = text}), {["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0"})
+      http.post(discordURL, textutils.serializeJSON({username = externName, content = text}), webhookHeaders)
     end
   end
 end
