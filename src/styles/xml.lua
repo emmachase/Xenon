@@ -112,7 +112,7 @@ function xmlutils.parse(buffer)
 
           local nChar, eChar, propName = buffer:find("([a-zA-Z0-9%_%-%:]+)")
           if nChar == 1 then
-            local nextNtWhite = buffer:find("%S", eChar + 1)
+            local nextNtWhite, propMatch = (buffer:find("%S", eChar + 1))
             if not nextNtWhite then
               error("Unexpected EOF")
             end
@@ -127,7 +127,7 @@ function xmlutils.parse(buffer)
 
             buffer = buffer:sub(eqP + 1)
 
-            local nextNtWhite, _, propMatch = buffer:find("(%S)")
+            nextNtWhite, _, propMatch = buffer:find("(%S)")
 
             if tonumber(propMatch) then
               -- Gon be a num

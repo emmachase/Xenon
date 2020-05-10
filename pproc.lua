@@ -217,8 +217,8 @@ local function attemptSub(line)
 
                   lineP = lineP .. attemptSub(scope[i][2])
 
-                  for p = 1, #modded do
-                    local indER = modded[p]
+                  for pp = 1, #modded do
+                    local indER = modded[pp]
                     if tempHold[indER] then
                       scope[indER] = tempHold[indER]
                     else
@@ -310,8 +310,8 @@ while #lines > 0 do
           local command = trimS(inst:sub(12))
           local inStr = command:match("%b\"\"")
           if inStr then
-            local fn = inStr:sub(2, #inStr - 1)
-            local Ihandle = outAPI.open(fn, "rb")
+            local fun = inStr:sub(2, #inStr - 1)
+            local Ihandle = outAPI.open(fun, "rb")
             if Ihandle then
               local Idata = Ihandle:read("*all") .. "\n"
               local Ilines = {"[["}
@@ -328,7 +328,7 @@ while #lines > 0 do
 
               lines = Ilines
             else
-              erf("Preprocessor parse error: (Line " .. lineI .. ")\nCannot find `" .. fn .. "'\n")
+              erf("Preprocessor parse error: (Line " .. lineI .. ")\nCannot find `" .. fun .. "'\n")
             end
           else
             erf("Preprocessor parse error: (Line " .. lineI .. ")\nUnknown include strategy\n")
@@ -337,8 +337,8 @@ while #lines > 0 do
           local command = trimS(inst:sub(8))
           local inStr = command:match("%b\"\"")
           if inStr then
-            local fn = inStr:sub(2, #inStr - 1)
-            local Ihandle = outAPI.open(fn, "rb")
+            local fun = inStr:sub(2, #inStr - 1)
+            local Ihandle = outAPI.open(fun, "rb")
             if Ihandle then
               local Idata = Ihandle:read("*all") .. "\n"
               local Ilines = {}
@@ -353,7 +353,7 @@ while #lines > 0 do
 
               lines = Ilines
             else
-              erf("Preprocessor parse error: (Line " .. lineI .. ")\nCannot find `" .. fn .. "'\n")
+              erf("Preprocessor parse error: (Line " .. lineI .. ")\nCannot find `" .. fun .. "'\n")
             end
           else
             erf("Preprocessor parse error: (Line " .. lineI .. ")\nUnknown include strategy\n")
@@ -363,10 +363,10 @@ while #lines > 0 do
           local inStr = command:match("%b\"\"")
 
           if inStr then
-            local fn = inStr:sub(2, #inStr - 1)
-            local asStr = command:match("[aA][sS] (%S+)") or fn:match("[^%.]+")
+            local fun = inStr:sub(2, #inStr - 1)
+            local asStr = command:match("[aA][sS] (%S+)") or fun:match("[^%.]+")
 
-            local Ihandle = outAPI.open(fn, "rb")
+            local Ihandle = outAPI.open(fun, "rb")
             if Ihandle then
               local Idata = Ihandle:read("*all") .. "\n"
               local Ilines = {
@@ -386,7 +386,7 @@ while #lines > 0 do
 
               lines = Ilines
             else
-              erf("Preprocessor parse error: (Line " .. lineI .. ")\nCannot find `" .. fn .. "'\n")
+              erf("Preprocessor parse error: (Line " .. lineI .. ")\nCannot find `" .. fun .. "'\n")
             end
           else
             erf("Preprocessor parse error: (Line " .. lineI .. ")\nUnknown require strategy\n")
@@ -469,9 +469,9 @@ while #lines > 0 do
             erf("Preprocessor parse error: (Line " .. lineI .. ")\n`if' ppc is disabled\n")
           else
             local command = trimS(inst:sub(3))
-            local fn, er = loadStr("return (" .. command .. ")")
+            local fun, er = loadStr("return (" .. command .. ")")
 
-            if not fn then
+            if not fun then
               er = er and er:sub(er:find(":") + 4) or "Invalid conditional"
               erf("Preprocessor parse error: (Line " .. lineI .. ")\n" .. er .. "\n")
             else
@@ -481,9 +481,9 @@ while #lines > 0 do
                 if tonumber(val) then val = tonumber(scope[i][2]) end
                 fscope[scope[i][1]] = val
               end
-              setfenv(fn, fscope)
+              setfenv(fun, fscope)
 
-              local succ, sret = pcall(fn)
+              local succ, sret = pcall(fun)
 
               if not succ then
                 sret = sret and sret:sub(sret:find(":") + 4) or "Invalid conditional"
