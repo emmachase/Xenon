@@ -41,10 +41,13 @@ local function handleTransaction(data)
 
   if tx.to == config.host then
     if tx.metadata then
-      local meta = kapi.parseMeta(tx.metadata)
+      local meta = tx.metadata
+      if type(meta) == "string" then
+        meta = kapi.parseMeta(meta)
+      end
 
       if meta.domain == config.name then
-        logger.info("Received " .. tx.value .. "kst from " .. tx.from .. " (Meta: " .. tx.metadata .. ")")
+        logger.info("Received " .. tx.value .. "kst from " .. tx.from .. " (Meta: " .. tostring(tx.metadata) .. ")")
 
         processPayment(tx, meta)
       end
