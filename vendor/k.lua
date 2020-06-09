@@ -53,7 +53,7 @@ local function authorize_websocket(cb, privatekey)
   asserttype(privatekey, "privatekey", "string", true)
 
   api_request(function(success, data)
-    cb(success and data and data.ok, data.url and data.url:gsub("wss:", "ws:") or data)
+    cb(success and data and data.ok, data and data.url and data.url:gsub("wss:", "ws:") or data)
   end, "/ws/start", {
     privatekey = privatekey
   })
@@ -67,7 +67,7 @@ function address(cb, address)
     if data.address then
       data.address.address = address
     end
-    cb(success and data and data.ok, data.address or data)
+    cb(success and data and data.ok, data and data.address or data)
   end, "/addresses/"..address)
 end
 
@@ -78,7 +78,7 @@ function addressTransactions(cb, address, limit, offset)
   asserttype(offset, "offset", "number", true)
 
   api_request(function(success, data)
-    cb(success and data and data.ok, data.transactions or data)
+    cb(success and data and data.ok, data and data.transactions or data)
   end, "/addresses/"..address.."/transactions?limit="..(limit or 50).."&offset="..(offset or 0))
 end
 
@@ -87,7 +87,7 @@ function addressNames(cb, address)
   asserttype(address, "address", "string")
 
   api_request(function(success, data)
-    cb(success and data and data.ok, data.names or data)
+    cb(success and data and data.ok, data and data.names or data)
   end, "/addresses/"..address.."/names")
 end
 
@@ -97,7 +97,7 @@ function addresses(cb, limit, offset)
   asserttype(offset, "offset", "number", true)
 
   api_request(function(success, data)
-    cb(success and data and data.ok, data.addresses or data)
+    cb(success and data and data.ok, data and data.addresses or data)
   end, "/addresses?limit="..(limit or 50).."&offset="..(offset or 0))
 end
 
@@ -106,7 +106,7 @@ function name(cb, name)
   asserttype(name, "name", "string")
 
   api_request(function(success, data)
-    cb(success and data and data.ok, data.name or data)
+    cb(success and data and data.ok, data and data.name or data)
   end, "/names/"..name)
 end
 
@@ -116,7 +116,7 @@ function rich(cb, limit, offset)
   asserttype(offset, "offset", "number", true)
 
   api_request(function(success, data)
-    cb(success and data and data.ok, data.addresses or data)
+    cb(success and data and data.ok, data and data.addresses or data)
   end, "/addresses/rich?limit="..(limit or 50).."&offset="..(offset or 0))
 end
 
@@ -126,7 +126,7 @@ function transactions(cb, limit, offset)
   asserttype(offset, "offset", "number", true)
 
   api_request(function(success, data)
-    cb(success and data and data.ok, data.transactions or data)
+    cb(success and data and data.ok, data and data.transactions or data)
   end, "/transactions?limit="..(limit or 50).."&offset="..(offset or 0))
 end
 
@@ -136,7 +136,7 @@ function latestTransactions(cb, limit, offset)
   asserttype(offset, "offset", "number", true)
 
   api_request(function(success, data)
-    cb(success and data and data.ok, data.transactions or data)
+    cb(success and data and data.ok, data and data.transactions or data)
   end, "/transactions/latest?limit="..(limit or 50).."&offset="..(offset or 0))
 end
 
@@ -145,7 +145,7 @@ function transaction(cb, txid)
   asserttype(txid, "txid", "number")
 
   api_request(function(success, data)
-    cb(success and data and data.ok, data.transaction or data)
+    cb(success and data and data.ok, data and data.transaction or data)
   end, "/transactions/"..txid)
 end
 
@@ -157,7 +157,7 @@ function makeTransaction(cb, privatekey, to, amount, metadata)
   asserttype(metadata, "metadata", "string", true)
 
   api_request(function(success, data)
-    cb(success and data and data.ok, data.transaction or data)
+    cb(success and data and data.ok, data and data.transaction or data)
   end, "/transactions", {
     privatekey = privatekey,
     to = to,
