@@ -3,7 +3,7 @@
 
 --#include "src/macros.lua"
 
-local versionTag = "v2.0.5"
+local versionTag = "v2.0.6"
 
 local args = {...}
 local layoutMode = args[1] == "--layout" or args[1] == "-l"
