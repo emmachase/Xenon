@@ -53,7 +53,7 @@ local function authorize_websocket(cb, privatekey)
   asserttype(privatekey, "privatekey", "string", true)
 
   api_request(function(success, data)
-    cb(success and data and data.ok, data and data.url and data.url:gsub("wss:", "ws:") or data)
+    cb(success and data and data.ok, data and data.url and data.url or data)
   end, "/ws/start", {
     privatekey = privatekey
   })
