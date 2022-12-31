@@ -16,7 +16,7 @@ end
 
 function logger.init(prints, tExternName, noColor)
   logger.printf = prints and print or function() end
-  logger.handle = fs.open("/log", "a")
+  logger.handle = fs.open(fs.combine(shell.dir(), "/log"), "a")
   logger.color = not noColor
 
   externName = tExternName or os.getComputerLabel() or "Computer - " .. os.getComputerID()

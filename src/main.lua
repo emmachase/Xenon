@@ -3,7 +3,7 @@
 
 --#include "src/macros.lua"
 
-local versionTag = "v3.0.0"
+local versionTag = "v3.0.1"
 
 local args = {...}
 local layoutMode = args[1] == "--layout" or args[1] == "-l"
@@ -14,9 +14,9 @@ local function xenon()
   --#require "src/util.lua" as util
 
   -- Load local config
-  local configHandle = fs.open("config.lua", "r")
+  local configHandle = fs.open(fs.combine(shell.dir(), "config.lua"), "r")
   if not configHandle then
-    configHandle = fs.open(".config", "r")
+    configHandle = fs.open(fs.combine(shell.dir(), ".config"), "r")
 
     if not configHandle then
       error("No config file found at '.config', please create one")
