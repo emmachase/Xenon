@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+### 3.0.0
+### Changed
+Updated to support 1.19.3
+- Damage is no longer supported.
+- config.outChest is no longer supported.
+- config.self is no longer needed.
+
 ### 2.0.7
 ### Fixed
 Only connect over wss

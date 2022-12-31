@@ -21,9 +21,22 @@ if not config.chests then
   end
 end
 
+local modems = { peripheral.find("modem") }
+local peripheralNameToSelf = {}
+foreach(modem, modems) do
+  local self = modem.getNameLocal()
+  local names = modem.getNamesRemote()
+  foreach(name, names) do
+    peripheralNameToSelf[name] = self
+  end
+end
+
 local chestPeriphs = {}
+local chestToSelf = {}
 foreach(chest, config.chests) do
-  chestPeriphs[#chestPeriphs + 1] = peripheral.wrap(chest)
+  local wrapper = peripheral.wrap(chest)
+  chestPeriphs[#chestPeriphs + 1] = wrapper
+  chestToSelf[wrapper] = peripheralNameToSelf[chest]
 
   if not chestPeriphs[#chestPeriphs] then
     chestPeriphs[#chestPeriphs] = nil
@@ -35,29 +48,29 @@ if #chestPeriphs == 0 then
   error("No valid chest(s) could be found")
 end
 
-if not config.self and not config.outChest then
-  -- Attempt to find by chestPeriph reverse search
-  local cp = chestPeriphs[1]
-  local list = cp.getTransferLocations()
-  foreach(loc, list) do
-    if loc:match("^turtle") then
-      config.self = loc
-      logger.warn("config.self not specified, assuming turtle connection '" .. config.self .. "'")
+-- if not config.self and not config.outChest then
+--   -- Attempt to find by chestPeriph reverse search
+--   local cp = chestPeriphs[1]
+--   local list = cp.getTransferLocations()
+--   foreach(loc, list) do
+--     if loc:match("^turtle") then
+--       config.self = loc
+--       logger.warn("config.self not specified, assuming turtle connection '" .. config.self .. "'")
 
-      BREAK()
-    end
-  end
+--       BREAK()
+--     end
+--   end
 
-  if not config.self then
-    error("config.self not specified, and was unable to infer self, please add to config")
-  end
-end
+--   if not config.self then
+--     error("config.self not specified, and was unable to infer self, please add to config")
+--   end
+-- end
 
 -- Wrap the output chest
-local outChest = nil
-if config.outChest then
-  outChest = peripheral.wrap(config.outChest)
-end
+-- local outChest = nil
+-- if config.outChest then
+--   outChest = peripheral.wrap(config.outChest)
+-- end
 
 --== Monitors ==--
 

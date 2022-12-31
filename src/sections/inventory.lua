@@ -27,7 +27,7 @@ local function processChest(chestPeriph, list, slotList, hasPredCache)
     logger.error("Unable to list chest '" .. chestPeriph .. "'")
   else
     for k, v in pairs(cTable) do -- For each item..
-      local bName = util.toListName(v.name, v.damage, 0) -- Simplified name to check if deep predicate matching is required
+      local bName = util.toListName(v.name, 0) -- Simplified name to check if deep predicate matching is required
 
       local predicateID = 0
       if hasPredCache[bName] then
@@ -46,7 +46,7 @@ local function processChest(chestPeriph, list, slotList, hasPredCache)
           -- This may take a while, so make sure to alert potential customers while shop is unavaliable
           -- TODO: ^^^^^ but only when sleep is required
 
-          local cachedMeta = chestPeriph.getItemMeta(k)
+          local cachedMeta = chestPeriph.getItemDetail(k)
           for chkPredicateID = 1, #predicateCache do
             if util.matchPredicate(predicateCache[chkPredicateID], cachedMeta) then
               predicateID = chkPredicateID
@@ -57,7 +57,7 @@ local function processChest(chestPeriph, list, slotList, hasPredCache)
       end
 
 
-      local lName = util.toListName(v.name, v.damage, predicateID)
+      local lName = util.toListName(v.name, predicateID)
 
       if transformedItems[lName] then
         if not list[lName] then
@@ -86,13 +86,13 @@ local function countItems()
 
   -- Perform some initial transformations on the data
   foreach(item, config.items) do
-    local bName = util.toListName(item.modid, item.damage or 0, 0)
+    local bName = util.toListName(item.modid, 0)
     if not hasPredCache[bName] then
       hasPredCache[bName] = item.predicateID ~= nil
     end
 
     if config.showBlanks then
-      local lName = util.toListName(item.modid, item.damage or 0, item.predicateID or 0)
+      local lName = util.toListName(item.modid, item.predicateID or 0)
       list[lName] = 0
       slotList[lName] = {}
     end
@@ -123,13 +123,13 @@ local function dispense(mcname, count)
     for i = #slotList[mcname], 1, -1 do
       local chestPeriph = slotList[mcname][i][3]
       local amountPushed = 0
-      if config.outChest then
-        local tempSlot = getFreeSlot()
-        amountPushed = chestPeriph.pushItems(config.self, slotList[mcname][i][1], toMoveCount, tempSlot)
-        outChest.pullItems(config.self, tempSlot)
-      else
-        amountPushed = chestPeriph.pushItems(config.self, slotList[mcname][i][1], toMoveCount)
-      end
+      -- if config.outChest then
+      --   local tempSlot = getFreeSlot()
+      --   amountPushed = chestPeriph.pushItems(config.self, slotList[mcname][i][1], toMoveCount, tempSlot)
+      --   outChest.pullItems(config.self, tempSlot)
+      -- else
+      amountPushed = chestPeriph.pushItems(chestToSelf[chestPeriph], slotList[mcname][i][1], toMoveCount)
+      -- end
 
       toMoveCount = toMoveCount - amountPushed
 
@@ -137,7 +137,7 @@ local function dispense(mcname, count)
         break
       end
 
-      if not anyFree() and not config.outChest then
+      if not anyFree() then -- and not config.outChest then
         for j = 1, 16 do
           if turtle.getItemCount(j) > 0 then
             turtle.select(j)
@@ -148,29 +148,29 @@ local function dispense(mcname, count)
     end
   end
 
-  if config.outChest then
-    local toBeDispensed = count
-    local iList, iSlotList = {}, {}
-    processChest(outChest, iList, iSlotList, hasPredCache)
-    for i = #iSlotList[mcname], 1, -1 do
-      toBeDispensed = toBeDispensed -
-        outChest.drop(
-          iSlotList[mcname][i][1],
-          math.min(iSlotList[mcname][i][2], toBeDispensed),
-          config.outChestDir or "up")
+  -- if config.outChest then
+  --   local toBeDispensed = count
+  --   local iList, iSlotList = {}, {}
+  --   processChest(outChest, iList, iSlotList, hasPredCache)
+  --   for i = #iSlotList[mcname], 1, -1 do
+  --     toBeDispensed = toBeDispensed -
+  --       outChest.drop(
+  --         iSlotList[mcname][i][1],
+  --         math.min(iSlotList[mcname][i][2], toBeDispensed),
+  --         config.outChestDir or "up")
 
-      if toBeDispensed <= 0 then
-        break
-      end
-    end
-  else
-    for i = 1, 16 do
-      if turtle.getItemCount(i) > 0 then
-        turtle.select(i)
-        turtle.drop()
-      end
+  --     if toBeDispensed <= 0 then
+  --       break
+  --     end
+  --   end
+  -- else
+  for i = 1, 16 do
+    if turtle.getItemCount(i) > 0 then
+      turtle.select(i)
+      turtle.drop()
     end
   end
+  -- end
 
   countItems()
 end
@@ -178,7 +178,7 @@ end
 local function findItem(name)
   for k, item in pairs(config.items) do
     if item.addy == name then
-      return item, util.toListName(item.modid, item.damage or 0, item.predicateID or 0)
+      return item, util.toListName(item.modid, item.predicateID or 0)
     end
   end
 

@@ -20,5 +20,5 @@ foreach(item, config.items) do
     end
   end
 
-  transformedItems[util.toListName(item.modid, item.damage or 0, item.predicateID or 0)] = item
+  transformedItems[util.toListName(item.modid, item.predicateID or 0)] = item
 end

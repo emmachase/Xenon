@@ -3,7 +3,7 @@
 
 --#include "src/macros.lua"
 
-local versionTag = "v2.0.7"
+local versionTag = "v3.0.0"
 
 local args = {...}
 local layoutMode = args[1] == "--layout" or args[1] == "-l"
@@ -37,7 +37,7 @@ local function xenon()
 
   configHandle.close()
   
-  if not (turtle or layoutMode or config.outChest) then
+  if not (turtle or layoutMode) then -- or config.outChest) then
     error("Xenon must run on a turtle")
   end
 

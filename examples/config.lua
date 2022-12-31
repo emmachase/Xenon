@@ -21,14 +21,6 @@ return {
   -- NOTE: It is not recommended to use kwallet, the best practice is to convert your pkey (using
   -- kwallet format) to raw pkey yourself first, and then use that here. Thus improving security.
 
-  -- If you want to run Xenon on a computer instead of a turtle, and spit the items out of a chest, specify the name of the chest below.
-  -- outChest = "chest_1",
-  outChestDir = "up", -- The direction, relative to outChest, that items should be spit out.
-  
-  self    = "east",  -- * The network name of the turtle running Xenon (e.g. 'turtle_64')
-  -- NOTE: If the chest and turtle are connected by adjacency and not by a wired modem/cabling
-  -- then 'self' MUST be defined as the position of the turtle relative to the chest, for example:
-  -- If the turtle is east of the chest, then self should be 'east', NOT 'right' or 'left' etc.
   textScale = 0.5,   --   The text scale to draw the monitor with
   monitor = "right", --   The network name of the monitor to use (If not present, peripheral.find is used)
   chest   = "left",  -- * The direction/name of the storage chest (*Required if 'chests' is not present)
@@ -53,7 +45,6 @@ return {
   items = { -- An array object of all the items you wish to sell
     {
       modid  = "minecraft:dye",-- * The modid of the item you wish to sell (*Required)
-      damage = 4,              -- * For items that are distinguished by their damage value (*Required if the item is a super-item)
       price  = 1,              -- * The price in kst each unit of this item should cost (*Required)
       disp   = "Lapis Lazuli", --   The name to display in the table, not technically required, but highly recommended
       addy   = "llz",          -- * The krist metaname to assign to this item, e.g. this one points 'llz@name.kst' to lapis (*Required)
@@ -77,10 +68,10 @@ return {
   },
 
   example = { -- Example chest data to be used with layoutMode (xenon --layout)
-    ["minecraft:gold_ingot::0::0"] = 212, -- Key is modname:itemname::damage::predicateID
-    ["minecraft:iron_ingot::0::0"] = 8,   -- Value is amount in stock
-    ["minecraft:diamond::0::0"] = 27,
-    ["minecraft:diamond_pickaxe::0::1"] = 2,
-    ["minecraft:dye::4::0"] = 13,
+    ["minecraft:gold_ingot::0"] = 212, -- Key is modname:itemname::predicateID
+    ["minecraft:iron_ingot::0"] = 8,   -- Value is amount in stock
+    ["minecraft:diamond::0"] = 27,
+    ["minecraft:diamond_pickaxe::1"] = 2,
+    ["minecraft:lapis_lazuli::0"] = 13,
   }
 }

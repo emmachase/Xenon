@@ -1,7 +1,7 @@
 local util = {}
 
-function util.toListName(modid, damage, pred)
-  return modid .. "::" .. damage .. "::" .. pred
+function util.toListName(modid, pred)
+  return modid .. "::" .. pred
 end
 
 function util.fromListName(lName)
