@@ -46,7 +46,7 @@ local function processChest(chestPeriph, list, slotList, hasPredCache)
           -- This may take a while, so make sure to alert potential customers while shop is unavaliable
           -- TODO: ^^^^^ but only when sleep is required
 
-          local cachedMeta = chestPeriph.getItemDetail(k)
+          local cachedMeta = chestPeriph.getItemDetail(k, true)
           for chkPredicateID = 1, #predicateCache do
             if util.matchPredicate(predicateCache[chkPredicateID], cachedMeta) then
               predicateID = chkPredicateID
